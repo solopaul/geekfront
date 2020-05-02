@@ -1,0 +1,39 @@
+html,body,#app {
+    font-family: '.PingFang SC Medium',Arial, Helvetica, sans-serif;
+    color: #880;
+    background-color: #32353d;
+    user-select:none;
+}
+
+.el-header, .el-footer {
+    background-color: #20232b;
+    color: rgb(148, 147, 147);
+    text-align: center;
+    padding: 0 20px;
+}
+
+.el-main {
+    color: #333;
+}
+
+.el-footer {
+    height: 40px;
+    line-height: 40px;
+}
+
+.el-menu.el-menu--horizontal {
+    border-bottom: none;
+}
+.el-carousel__arrow {
+    width: 24px;
+    border-radius: 8%;
+    background-color: rgba(15, 68, 128, 0.51);
+    color: #e4e4e4;
+}
+.el-carousel__arrow:hover {
+    background-color: rgba(7, 98, 202, 0.61);
+}
+
+.el-table__body tr.current-row>td {
+    background-color: #13587a;
+}

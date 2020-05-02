@@ -1,0 +1,55 @@
+html,
+body,
+#app,
+.el-container {
+  padding: 0px;
+  margin: 0px;
+  height: 100%;
+  font-family: ".PingFang SC Medium", Arial, Helvetica, sans-serif;
+  color: #880;
+  background-color: #32353d;
+  user-select: none;
+  .el-header,
+  .el-footer {
+    background-color: rgba(32, 35, 43, .8);
+    color: rgb(148, 147, 147);
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  .el-main {
+    color: #333;
+  }
+
+  .el-footer {
+    line-height: 38px;
+  }
+
+  .el-menu.el-menu--horizontal {
+    border-bottom: none;
+  }
+
+  .el-table__body tr.current-row > td {
+    background-color: #13587a;
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    &::hover{
+        color:red;
+    }
+  }
+  ::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.2);
+    background: #535353;
+  }
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    background: #222;
+  }
+}
+section.content {
+  margin: 0;
+}
