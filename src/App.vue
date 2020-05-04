@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :style="{'background-image': 'url(' + require('./assets/skin/bg29.jpg') + ')', 'background-size': 'cover'}">
+  <div id="app" v-loading="loading" :style="{'background-image': 'url(' + skinpath  + ')', 'background-size': 'cover'}">
     <cms-main></cms-main>
   </div>
 </template>
@@ -11,6 +11,35 @@ export default {
   name: 'App',
   components: {
     CmsMain
+  },
+  data() {
+    return {
+      loading: false
+    }
+  },
+  created() {
+    Promise.all([window.initEnvConfig(), window.initAppConfig(), window.initDeviceList()]).then(res => {
+      console.log(res, 'promise all 方法');
+      this.$store.commit('initEnvConf', res[0]);
+      this.$store.commit('initAppConf', res[1]);
+      this.$store.commit('initDeviceList', res[2]);
+      this.loading = false;
+      window.initLeList().then(res => {
+        console.log(333,res);
+        this.$store.commit('initLeList', res);
+      });
+    }).catch(
+        (err) => {
+            console.log(err)
+        }
+    );
+  },
+  mounted() {
+  },
+  computed: {
+    skinpath() {
+      return this.$store.state.appconf.Skin && this.$store.state.appconf.Skin.path ? this.$store.state.appconf.Skin.path : require('./assets/skin/bg5.jpg');
+    }
   }
 }
 </script>
@@ -20,7 +49,6 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
   margin-top: 60px;
 }

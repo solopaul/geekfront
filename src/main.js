@@ -6,17 +6,18 @@ import './assets/theme/index.css'
 import './assets/iconfont/base.css'
 // import './assets/css/theme-green/index.css'; // 浅绿色主题
 //Axios from 'vue-axios'
+//Vue.use(VueAxios, axios)
+//Vue.prototype.$http = axios
+import './assets/css/el-base.scss'; // 浅绿色主题
 import './assets/css/common.scss'; // 浅绿色主题
 import './assets/js/cms.js'
 import './assets/js/app.js'
 // import './assets/js/init.js'
-//Vue.use(VueAxios, axios)
-//Vue.prototype.$http = axios
 import VueRouter from 'vue-router'
 import store from './store'
 Vue.use(VueRouter)
 Vue.use(ElementUI, {
-    size: 'small'
+    size: 'mini'
 });
 Vue.config.productionTip = false
 

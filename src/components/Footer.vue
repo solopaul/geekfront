@@ -1,5 +1,5 @@
 <template>
-    <div style="display:flex;justify-content: space-between;">
+    <div class="foot-box">
       <cms-versions></cms-versions>
       <div>
         <span>Geek</span>
@@ -41,11 +41,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.help {
-  span {
-    cursor: pointer;
-    &:hover{
-      color: #00c2ff;
+.foot-box {
+  display:flex;
+  justify-content: space-between;
+  .help {
+    span {
+      cursor: pointer;
+      &:hover{
+        color: #00c2ff;
+      }
     }
   }
 }

@@ -6,7 +6,7 @@
       title="历史版本信息"
       width="400"
       trigger="click">
-      <el-timeline :reverse="reverse" class="version-info">
+      <el-timeline :reverse="false" class="version-info">
         <el-timeline-item
           v-for="(version, index) in versions"
           :key="index"
@@ -79,6 +79,7 @@ export default {
   font-size: 18px;
 }
 .version-info {
+  padding-top: 5px;
   padding-left: 10px;
   font-size: 12px;
   color: #111;
