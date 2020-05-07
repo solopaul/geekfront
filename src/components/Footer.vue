@@ -2,7 +2,7 @@
     <div class="foot-box">
       <cms-versions></cms-versions>
       <div>
-        <span>Geek</span>
+        <span>GK6+</span>
         <el-divider direction="vertical"></el-divider>
         <span>Tech</span>
       </div>

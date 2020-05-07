@@ -18,23 +18,24 @@ export default {
     }
   },
   created() {
-    Promise.all([window.initEnvConfig(), window.initAppConfig(), window.initDeviceList()]).then(res => {
+    Promise.all([window.initEnvConfig(), window.initAppConfig(), window.initDeviceList(), window.initLeList(), window.initMacroList()]).then(res => {
       console.log(res, 'promise all 方法');
       this.$store.commit('initEnvConf', res[0]);
       this.$store.commit('initAppConf', res[1]);
       this.$store.commit('initDeviceList', res[2]);
+      this.$store.commit('initLeList', res[3]);
+      this.$store.commit('initMacroList', res[4]);
       this.loading = false;
-      window.initLeList().then(res => {
-        console.log(333,res);
-        this.$store.commit('initLeList', res);
-      });
     }).catch(
         (err) => {
             console.log(err)
         }
-    );
+    )
   },
   mounted() {
+    window.onresize = () => {
+      this.$store.commit("setScreen");
+    }
   },
   computed: {
     skinpath() {

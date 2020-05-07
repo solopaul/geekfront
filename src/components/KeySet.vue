@@ -64,9 +64,9 @@
                 <el-radio-button label="Mac">
                   <i class="el-icon-kb-mac"></i>
                 </el-radio-button>
-                <el-radio-button label="Linux">
+                <!-- <el-radio-button label="Linux">
                   <i class="el-icon-kb-linux"></i>
-                </el-radio-button>
+                </el-radio-button> -->
               </el-radio-group>
             </el-form-item>
             <el-form-item label="功能">
@@ -84,15 +84,15 @@
                 >
                 </el-option>
               </el-select>
-              <span class="el-icon-plus" style="padding: 0 10px;color: white;"></span>
+              <span class="el-icon-plus" style="padding: 0 5px;color: #BABABA;"></span>
               <el-input
                 v-model="curkeytext"
                 placeholder="选择"
                 disabled
-                style="width:5rem"
+                style="width:5rem;color:#888;"
               ></el-input
-              >&nbsp;
-              <el-button icon="el-icon-check" @click="setCombFunc"
+              >
+              <el-button icon="el-icon-check" @click="setCombFunc" style="margin-left:10px;"
                 >使用</el-button
               >
             </el-form-item>
@@ -243,9 +243,6 @@ export default {
 .el-tabs--border-card .el-tabs__content {
   padding: 1vw;
 }
-.el-button--mini.is-round {
-  padding: 0.6vw 0.8vw;
-}
 /deep/.key-btn.el-button--danger {
   color: #fff;
   border-color: #f00;
@@ -285,7 +282,7 @@ export default {
   width: 11.5vw;
 }
 .key-btn.l625 {
-  width: 26.225vw;
+  width: 26.525vw;
 }
 .key-btn.hide {
   visibility: hidden;
@@ -298,11 +295,14 @@ export default {
 .keyset-tab .keyset-row {
   padding: 0 8px;
   .el-button {
-    margin-left: 0.5vw;
-    margin-bottom: 0.6vw;
+    margin-left: 0.55vw;
+    margin-bottom: 8px;
     &:first-child {
       margin-left: 0;
     }
+  }
+  .el-button {
+    padding: 6px 0.8vw;
   }
 }
 .keyset-tab .el-button.pad150 {

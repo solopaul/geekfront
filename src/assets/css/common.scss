@@ -29,4 +29,52 @@ body,
   section.content {
     margin: 0;
   }
+  .sp-list {
+    margin: 0;
+    padding: 0;
+    li.item{
+      list-style-type: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 36px;
+      color: #888;
+      padding: 0 10px;
+      box-sizing: border-box;
+      cursor: default;
+      &.active {
+        color: #eee;
+        background-color: #00c2ff;
+        span.btn {
+          display: block;
+        }
+      }
+      &:hover {
+        color: #ccc;
+        background-color: #006E90;
+        span.btn {
+          display: block;
+        }
+      }
+      &:not(:last-child) {
+        border-bottom: 1px solid #2F2F2F;
+      }
+      img {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+      }
+      span.desc {
+        flex: calc(100% - 50px);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 14px;
+      }
+      span.btn {
+        display: none;
+        cursor: pointer;
+      }
+    }
+  }
 }

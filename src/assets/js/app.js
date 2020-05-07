@@ -26,3 +26,10 @@ window.initLeList = () => {
     });
   });
 }
+window.initMacroList = () => {
+  return new Promise(function(resolve) {
+    window.readMacroList(function (data) {
+      resolve(data);
+    });
+  });
+}

@@ -11,7 +11,8 @@ const store = new Vuex.Store({
     window: {
       height: document.documentElement.clientHeight || document.body.clientHeight,
       width: document.documentElement.clientWidth || document.body.clientWidth,
-      layout: localStorage.getItem("layout") ? localStorage.getItem('layout') : "row"
+      layout: localStorage.getItem("layout") ? localStorage.getItem('layout') : "row",
+      leftSideWidth: 265
     },
     style: {
       basecolor: '#888',
@@ -27,7 +28,8 @@ const store = new Vuex.Store({
     appconf: {},
     devicelist: [],
     deviceconf: {},
-    lelist: []
+    lelist: [],
+    macrolist: [],
   },
   mutations: {
     edit(state) {
@@ -45,10 +47,17 @@ const store = new Vuex.Store({
     initLeList(state, data) {
       state.lelist = data;
     },
+    initMacroList(state, data) {
+      state.macrolist = data;
+    },
     updateAppConf(state, data) {
       window.writeAppConfig(data, () => {
         state.appconf = data;
       });
+    },
+    setScreen(state) {
+      state.window.width = document.body.offsetWidth;
+      state.window.height = document.body.offsetHeight;
     }
   },
 });
