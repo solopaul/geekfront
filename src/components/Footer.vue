@@ -15,7 +15,7 @@
         <el-divider direction="vertical"></el-divider>
         <span class="el-icon-service"></span>
         <el-divider direction="vertical"></el-divider>
-        <span class="el-icon-question"></span>
+        <span @dblclick="surprise" class="el-icon-question"></span>
       </div>
     </div>
 </template>
@@ -35,7 +35,9 @@ export default {
   mounted(){
   },
   methods: {
-    
+    surprise() {
+      window.openDebugWnd();
+    }
   }
 }
 </script>

@@ -12,16 +12,17 @@
         text-color="#bbb"
         active-text-color="#00c2ff">
           <el-menu-item index="1"><span class="el-icon-cpu"></span>功能配置</el-menu-item>
-          <el-menu-item index="2" disabled><span class="el-icon-sunrise-1"></span>灯效</el-menu-item>
-          <el-menu-item index="3" disabled><span class="el-icon-edit-outline"></span>宏</el-menu-item>
-          <el-menu-item index="4" disabled><span class="el-icon-s-comment"></span>敬请期待</el-menu-item>
+          <el-menu-item v-if="false" index="2" disabled><span class="el-icon-sunrise-1"></span>灯效</el-menu-item>
+          <el-menu-item v-if="false" index="3" disabled><span class="el-icon-edit-outline"></span>宏</el-menu-item>
+          <el-menu-item v-if="false" index="4" disabled><span class="el-icon-s-comment"></span>敬请期待</el-menu-item>
         </el-menu>
       </div>
       <div class="menu-right">
         <div class="switch-box">
-            <el-carousel arrow="hover" type="card" :autoplay="false" indicator-position="none" height="60px">
-                <el-carousel-item v-for="item in 10" :key="item">
-                    <img src="../assets/img/device.png" alt="">
+            <el-carousel arrow="hover" type="card" :autoplay="false" @change="changeDevice" indicator-position="none" height="60px">
+                <el-carousel-item v-for="item in $store.state.devicelist" :key="item.Name">
+                    <!-- <img src="../assets/img/device.png" :alt="item.Name"> -->
+                    <img :src="'device/' + item.ModelID + '/device.png'" @error="setDefaultImg($event)" :alt="item.Name">
                 </el-carousel-item>
             </el-carousel>
         </div>
@@ -72,6 +73,12 @@ export default {
     },
     closeWin() {
       window.closeCMSUI();
+    },
+    changeDevice(val) {
+      this.$store.commit("setCurDevice", this.$store.state.devicelist[val]);
+    },
+    setDefaultImg($event) {
+      $event.target.src = require('../assets/img/device.png');
     }
   }
 }

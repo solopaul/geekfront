@@ -13,7 +13,7 @@
       </slot>
       <slot slot="content">
         <ul class="sp-list">
-          <li class="item" v-for="item in $store.state.lelist" :key="item.GUID">
+          <li class="item" :class="{'active': $store.state.device.curplayle == item.GUID }" v-for="item in $store.state.lelist" :key="item.GUID" @click="onSelectLe(item.GUID)">
             <img src="../assets/app/app.png"/>
             <span class="desc">
               {{item.Name}}
@@ -28,6 +28,7 @@
 
 <script>
 import ListBox from './ListBox';
+//import ColorPicker from './ColorPicker';
 export default {
   name: "LeList",
   components: {
@@ -38,7 +39,11 @@ export default {
   },
   props: {},
   mounted() {},
-  methods: {},
+  methods: {
+    onSelectLe(val){
+      this.$emit("onSelect", val);
+    }
+  },
 };
 </script>
 

@@ -33,3 +33,35 @@ window.initMacroList = () => {
     });
   });
 }
+
+window.initDeviceConfig = (deviceid) => {
+  return new Promise(function(resolve) {
+    window.readModelConfig(deviceid, function(data){
+      resolve(data);
+    });
+  });
+}
+window.initDeviceKeymap = (deviceid) => {
+  return new Promise(function(resolve) {
+    window.readModelKeymap(deviceid, function (data) {
+      resolve(data);
+    });
+  });
+}
+window.initDeviceFWVersion = (deviceid) => {
+  return new Promise(function(resolve) {
+    window.firmwareUpdateQuery(deviceid, function (data) {
+      resolve(data);
+    });
+  });
+}
+window.initDeviceProfileList = function (deviceid) {
+  return new Promise(function(resolve) {
+    window.getProfileList(deviceid, function (data) {
+      resolve(data);
+      //getDefaultProfiles(function(){initProfiles(true)});
+    });
+  });
+  // getModelProfiles(deviceid);
+  // getModelInfoByDid(deviceid);
+}

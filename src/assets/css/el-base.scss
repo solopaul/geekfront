@@ -48,4 +48,8 @@ body,
   .el-table__body tr.current-row > td {
     background-color: #13587a;
   }
+
+  .el-loading-mask {
+    background-color: rgba(32, 35, 43, 0.8);
+  }
 }

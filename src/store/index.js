@@ -8,6 +8,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     name: "geekx",
+    devdir: 'D:/jizhi/GK6X-Release/CMSEngine/driver/device/',
     window: {
       height: document.documentElement.clientHeight || document.body.clientHeight,
       width: document.documentElement.clientWidth || document.body.clientWidth,
@@ -30,6 +31,16 @@ const store = new Vuex.Store({
     deviceconf: {},
     lelist: [],
     macrolist: [],
+    curdevice: {},
+    device: {
+      config: {},
+      keymap: [],
+      profilelist: [],
+      curprofile: {},
+      fwversion: {},
+      curplayle: ""
+    },
+    isDevReady: false
   },
   mutations: {
     edit(state) {
@@ -49,6 +60,28 @@ const store = new Vuex.Store({
     },
     initMacroList(state, data) {
       state.macrolist = data;
+    },
+    setCurDevice(state, data) {
+      state.curdevice = data;
+    },
+    setCurConfig(state, data) {
+      state.device.config = data;
+    },
+    setCurKeymap(state, data) {
+      state.device.keymap = data;
+    },
+    setCurProfileList(state, data) {
+      state.device.profilelist = data;
+    },
+    setCurProfile(state, data) {
+      state.device.profile = data;
+      state.isDevReady = true;
+    },
+    setCurFWVersion(state, data) {
+      state.device.fwversion = data;
+    },
+    setCurPlayLe(state, data) {
+      state.device.curplayle = data;
     },
     updateAppConf(state, data) {
       window.writeAppConfig(data, () => {

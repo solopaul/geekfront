@@ -11,10 +11,17 @@
           <el-option label="英文" value="en"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item v-if="false" label="开机启动">
+      <el-form-item label="显示设置">
+        <el-select v-model="$store.state.appconf.Language" @change="setLang" placeholder="请选择">
+          <el-option label="1200*900" value="zh"></el-option>
+          <el-option label="1024*768" value="en"></el-option>
+          <el-option label="1920*1080" value="en"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item v-if="true" label="开机启动">
         <el-switch v-model="settings.openwith"></el-switch>
       </el-form-item>
-      <el-form-item label="布局">
+      <el-form-item v-if="true" label="布局">
         <el-radio-group v-model="$store.state.window.layout" @change="setLayout" size="mini" >
           <el-radio label="row">左右布局</el-radio>
           <el-radio label="row-reverse">右左布局</el-radio>
@@ -22,7 +29,7 @@
       </el-form-item>
     </el-form>
     <el-form :model="settings" label-position="top">
-      <el-form-item label="皮肤">
+      <el-form-item v-if="true" label="皮肤">
         <div class="skins" style="">
           <div :class="{item:true, active: skinpath == skin.path}" v-for="(skin,index) in skins" :key="skin.path" @click="setSkin(skin)" :style="{'background-image': 'url(' + skin.path + ')'}">
             <div class="mask">
@@ -67,17 +74,17 @@ export default {
         {name: "皮肤", path: require('../assets/skin/bg17.jpg'),mode: 0},
         {name: "皮肤", path: require('../assets/skin/bg18.jpg'),mode: 0},
         {name: "皮肤", path: require('../assets/skin/bg19.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg20.jpg'),mode: 0},
+        {name: "皮肤", path: require('../assets/skin/bg20.jpg'),mode: 1},
         {name: "皮肤", path: require('../assets/skin/bg21.jpg'),mode: 0},
         {name: "皮肤", path: require('../assets/skin/bg22.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg23.jpg'),mode: 0},
+        {name: "皮肤", path: require('../assets/skin/bg23.jpg'),mode: 1},
         {name: "皮肤", path: require('../assets/skin/bg24.jpg'),mode: 0},
         {name: "皮肤", path: require('../assets/skin/bg25.jpg'),mode: 0},
         {name: "皮肤", path: require('../assets/skin/bg26.jpg'),mode: 0},
         {name: "皮肤", path: require('../assets/skin/bg27.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg28.jpg'),mode: 0},
+        {name: "皮肤", path: require('../assets/skin/bg28.jpg'),mode: 1},
         {name: "皮肤", path: require('../assets/skin/bg29.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg30.jpg'),mode: 0}
+        {name: "皮肤", path: require('../assets/skin/bg30.jpg'),mode: 1}
       ],
       skinpath: null
     };
