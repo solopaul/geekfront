@@ -18,19 +18,26 @@ export default {
     }
   },
   created() {
-    Promise.all([window.initEnvConfig(), window.initAppConfig(), window.initDeviceList(), window.initLeList(), window.initMacroList()]).then((res) => {
+    Promise.all([
+      window.initEnvConfig(),
+      window.initAppConfig(),
+      window.initDeviceList(),
+      window.initLeList(),
+      window.initMacroList(),
+      window.initUserConfig()
+    ]).then((res) => {
       this.$store.commit('initEnvConf', res[0]);
       this.$store.commit('initAppConf', res[1]);
       this.$store.commit('initDeviceList', res[2]);
       this.$store.commit('initLeList', res[3]);
       this.$store.commit('initMacroList', res[4]);
+      this.$store.commit('setUserConfig', res[5]);
       if(res[2].length > 0){
         this.$store.commit('setCurDevice', res[2][0]);
       }
       this.loading = false;
     }).then(()=>{
       this.initDevice(this.$store.state.curdevice);
-      window.initMacroList();
     }).catch(
       (err) => {
         console.log(err)
@@ -60,21 +67,43 @@ export default {
     }
   },
   methods:{
-    initDevice(curdev){
+    initDevice(curdev) {
       let curdevid = curdev.ModelID;
-      Promise.all([window.initDeviceConfig(curdevid),window.initDeviceKeymap(curdevid),window.initDeviceProfileList(curdevid),window.initDeviceFWVersion(curdevid)]).then(resdev => {
-        console.log(2345555,resdev);
+      Promise.all([
+        window.initDeviceConfig(curdevid),
+        window.initDeviceKeymap(curdevid),
+        window.initDeviceProfileList(curdevid),
+        window.initDeviceFWVersion(curdevid)
+      ]).then(resdev => {
+        // console.log(2345555,resdev);
         this.$store.commit('setCurConfig', resdev[0]);
         this.$store.commit('setCurKeymap', resdev[1]);
         this.$store.commit('setCurProfileList', resdev[2]);
-        window.readProfile(curdevid, resdev[2][0].GUID, (data)=>{
-          console.log(11111);
+        console.log(666,JSON.stringify(resdev[2],null,2))
+        // console.log(333,JSON.stringify(this.$store.state.userconfig, null, 2));
+        // console.log(5444,this.$store.state.userconfig.ModelInit[curdevid].Mode);
+        // 初始化机型数据
+        if(!this.$store.state.userconfig.ModelInit[curdevid]){
+          //initdevdata()
+        }
+        let curpfguid = this.getProfileGuidByModeIndex(resdev[2], this.$store.state.userconfig.ModelInit[curdevid].Mode);
+        window.readProfile(curdevid, curpfguid, (data)=>{
+          console.log(11111,typeof data, JSON.stringify(data));
           this.$store.commit('setCurProfile', data);
           this.$store.commit('setCurFWVersion', resdev[3]);
           // console.log("profile0:",JSON.stringify(data,null,2));
           // console.log("device:",JSON.stringify(this.$store.state.device))
         })
       });
+    },
+    getProfileGuidByModeIndex(pflist, modeidx) {
+      let curpfguid = "";
+      pflist.forEach(item => {
+        if(item.ModeIndex == modeidx){
+          curpfguid = item.GUID;
+        }
+      });
+      return curpfguid;
     }
   }
 }

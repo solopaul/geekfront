@@ -37,7 +37,7 @@ body,
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 36px;
+      height: 30px;
       color: #888;
       padding: 0 10px;
       box-sizing: border-box;
@@ -75,6 +75,119 @@ body,
         display: none;
         cursor: pointer;
       }
+      span.ol{
+        width: 22px;
+        display: inline-block;
+        border: 1px solid #00c2ff;
+        border-radius: 50%;
+        background-color: rgba(0,200,255,.5);
+        text-align: center;
+        font-weight: 700;
+        margin-right: 8px;
+        box-shadow: inset 0 0 5px #007da3;
+        color: white;
+      }
+      &.selected {
+        transition: all .5s;
+        padding-left: 4px;
+        color: #eee;
+        border-radius: 15px;
+        border: 1px dashed yellow;
+        span.desc {
+          font-size: 1em;
+        }
+        span.btn {
+          display: block;
+        }
+      }
     }
   }
 }
+
+.el-input__prefix .el-icon-filter {
+  width: 1.2em;
+  background-image: url('../img/filter.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  filter: grayscale(100%);
+}
+
+.el-select-dropdown, .el-tabs--border-card>.el-tabs__header {
+  border: 1px solid #4C4C4C;
+}
+
+.device-outline{
+  position:relative;
+  width:100%;
+  animation-timing-function:ease-in-out;
+  animation-name:device-outline;
+  animation-duration:1s;
+  animation-iteration-count:infinite;
+  animation-direction:alternate
+}
+@keyframes device-outline{
+  0%{
+    filter:opacity(.2);
+    transfrom:scale(.4)
+  }
+  100%{
+    filter:opacity(1);
+    transfrom:scale(1.2)
+  }
+}
+
+/*breath*/
+.btn-breath {
+  /*position:relative;*/
+  border: 1px solid #2b92d4;
+  border-radius: 2px;
+  color: #fff; /*font-size:20px;*/
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  overflow: hidden; /*background-image: -webkit-gradient(linear, left top, left bottom, from(#6cc3fe), to(#21a1d0));*/
+  animation-timing-function: ease-in-out;
+  animation-name: breathe;
+  animation-duration: 1000ms;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+@keyframes breathe {
+  0% {
+    opacity: 0.2;
+    box-shadow: 0 1px 2px rgba(255, 255, 255, 0.1);
+  }
+  100% {
+    opacity: 1;
+    border: 1px solid rgba(59, 235, 235, 1);
+    box-shadow: 0 1px 30px rgba(59, 255, 255, 1);
+  }
+}
+
+.key-breath {
+  border: 1px solid #2b92d4;
+  border-radius: 2px;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  animation-timing-function: ease-in-out;
+  animation-name: keybreathe;
+  animation-duration: 300ms;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+@keyframes keybreathe {
+  0% {
+    opacity: 0.3;
+    box-shadow: 0 1px 2px rgba(255, 255, 255, 0.1);
+  }
+  100% {
+    opacity: 1;
+    border: 1px solid rgba(0, 255, 0, 1);
+    box-shadow: 0 1px 30px rgba(255, 0, 0, 1);
+  }
+}
+

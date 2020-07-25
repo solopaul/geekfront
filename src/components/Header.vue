@@ -96,6 +96,11 @@ export default {
     .logo {
       height:56px;
       display:inline-block;
+      filter: grayscale(30%);
+      &:hover {
+        filter: grayscale(1%);
+        cursor: pointer;
+      }
     }
   }
   .menu-right {

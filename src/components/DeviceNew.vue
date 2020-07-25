@@ -1,30 +1,16 @@
 <template>
-  <div class="device" @mouseout="hideKeyConf" :style="{width: showwidth + 'px', height: showheight + 'px', overflow: 'hidden'}">
+  <div class="device" :style="{width: showwidth + 'px', height: showheight + 'px', overflow: 'hidden'}">
+    <div class="key-panel" :style="{'left': layoutpanel.left + 'px','top': layoutpanel.top + 'px','width': layoutpanel.width + 'px','height': layoutpanel.height + 'px'}">
+    </div>
     <div
-      class="device-le"
+      :class="{'device-key': key.LogicCode >= 0, 'device-light': key.LogicCode == -1}"
       v-for="key in showkeys"
       :key="key.LocationCode"
       :data-location="key.LocationCode"
-      :style="{'left': key.Position.Left + 'px','top': key.Position.Top + 'px','width': key.Position.Width + 'px','height': key.Position.Height + 'px', 'transform': 'rotate(' + key.Position.Rotate + 'deg)'}"
+      :style="{'left': key.Position.Left + 'px','top': key.Position.Top + 'px','width': key.Position.Width + 'px','height': key.Position.Height + 'px', 'transform': 'rotate(' + key.Position.Rotate + 'deg)', 'font-size': keyfontsize + 'rem'}"
     >
-    </div>
-    <img :src="outline" class="device-outline" :style="{position: 'absolute', 'width': showimgwidth + 'px','left': offsetleft + 'px', 'top' :offsettop+'px'}"/>
-    <img :src="panel" :style="{position: 'absolute', 'width': showimgwidth + 'px','left': offsetleft + 'px', 'top' :offsettop+'px'}"/>
-    <img :src="keycap" :style="{position: 'absolute', 'width': showimgwidth + 'px','left': offsetleft + 'px', 'top' :offsettop+'px'}"/>
-    <div
-      v-show="true"
-      v-for="(key,idx) in showkeys"
-      :key="'key'+idx"
-      :id="'key'+key.LogicCode"
-      class="device-key"
-      v-bind:class="{noshowkeyset: true}"
-      @mouseover="showKeyConf(key,$event)"
-      :style="{'left': key.Position.Left + 'px', 'top': key.Position.Top + 'px', 'width': key.Position.Width + 'px', 'height': key.Position.Height + 'px', 'transform': 'rotate(' + key.Position.Rotate + 'deg)'}" :data-logic="key.LogicCode"
-      >
-    </div>
-    <div id="key_conf" class="el-popover el-popper el-popover--plain" style="position: absolute; top: 20px; left: 118px; transform-origin: center top; z-index: 1;padding: 8px 10px;min-width: 80px;" x-placement="top">
-      功能：未设置 <el-button class="el-icon-delete" type="text"></el-button>
-      <div x-arrow="" class="popper__arrow" style="left: calc(50% - 6px)"></div>
+      <p v-if="key.LogicCode >= 0" :data-logic="key.LogicCode" @click="playLe(key.LogicCode)">{{key.Show}}</p>
+      <p v-else :data-logic="key.LogicCode" @click="playLe(key.LogicCode)"><span class="el-icon-s-opportunity"></span></p>
     </div>
     <el-slider vertical v-model="zoomoffset" @change="zoomChange" :format-tooltip="formatZoomOffset" height="200px" :style="{position:'absolute', left: '10px', top: (showheight - 200) / 2 + 'px'}"></el-slider>
     <el-row class="dev-ctrls top">
@@ -36,7 +22,7 @@
         </span>
         <span class="el-icon-setting">
         </span>
-        <el-radio-group v-if="true" v-model="playspeed" size="mini">
+        <el-radio-group v-if="false" v-model="playspeed" size="mini">
           <el-radio-button label="20">极快</el-radio-button>
           <el-radio-button label="50">正常</el-radio-button>
           <el-radio-button label="100">慢速</el-radio-button>
@@ -45,8 +31,12 @@
     </el-row>
     <el-row class="dev-ctrls btm">
       <el-col :span="24">
-        <el-radio-group v-model="modeidx" size="mini">
-          <el-radio-button v-for="item in profilelist" :key="item.GUID" :label="item.ModeIndex" @click="changeMode(item.GUID)">{{item.Name}}{{item.ModeIndex}}</el-radio-button>
+        <el-radio-group v-model="profile" size="mini">
+          <el-radio-button label="0">标准层</el-radio-button>
+          <el-radio-button label="1">板载一</el-radio-button>
+          <el-radio-button label="2">板载二</el-radio-button>
+          <el-radio-button label="3">板载三</el-radio-button>
+          <el-radio-button label="4">驱动层</el-radio-button>
         </el-radio-group>
         <div>
           <el-button type="default" icon="el-icon-check">保存</el-button>
@@ -59,7 +49,6 @@
 
 <script>
 import { toJS, fromRGB, toHSB, fromHSB } from "../util/color.js";
-import { compare } from "../util/util.js";
 export default {
   name: "Device",
   data() {
@@ -67,8 +56,8 @@ export default {
       zoomoffset: localStorage.getItem("zoomoffset") ? parseInt(localStorage.getItem("zoomoffset")) : 50,
       playtimer: null,
       value: 0,
-      playspeed: 100,
-      modeidx: 0
+      profile: "1",
+      playspeed: 100
     }
   },
   props: {
@@ -85,11 +74,6 @@ export default {
   },
   watch: {},
   computed: {
-    profilelist: function() {
-      let pflist = this.$store.state.device.profilelist ? this.$store.state.device.profilelist : [];
-      pflist = pflist.sort(compare("ModeIndex", true));
-      return pflist;
-    },
     scale: function() {
       var scale = 1;
       if (this.showwidth / this.showheight > this.orgwidth / this.orgheight) {
@@ -131,6 +115,36 @@ export default {
     },
     fwversion(){
       return this.$store.state.device.fwversion && this.$store.state.device.fwversion.FWVersion ? this.$store.state.device.fwversion.FWVersion : "加载中";
+    },
+    layoutpanel(){
+      let panellayout = {};
+      let templeftmin = this.keys[0].Position.Left;
+      let templeftmax = this.keys[0].Position.Left + this.keys[0].Position.Width;
+      let temptopmin = this.keys[0].Position.Top + this.keys[0].Position.Width;
+      let temptopmax = this.keys[0].Position.Top + this.keys[0].Position.Height;
+      this.keys.forEach(item => {
+        if(item.Position.Left < templeftmin){
+          templeftmin = item.Position.Left;
+        }
+        if(item.Position.Left + item.Position.Width > templeftmax){
+          templeftmax = item.Position.Left + item.Position.Width;
+        }
+        if(item.Position.Top < temptopmin){
+          temptopmin = item.Position.Top;
+        }
+        if(item.Position.Top + item.Position.Height > temptopmax){
+          temptopmax = item.Position.Top + item.Position.Height;
+        }
+      });
+      panellayout.left = (templeftmin) * (this.scale + this.zoom) + this.offsetleft - 14;
+      panellayout.top = (temptopmin) * (this.scale + this.zoom) + this.offsettop - 15;
+      panellayout.width = (templeftmax - templeftmin) * (this.scale + this.zoom) + 28;
+      panellayout.height = (temptopmax - temptopmin) * (this.scale + this.zoom) + 40;
+      console.log(templeftmax-templeftmin,temptopmax-temptopmin);
+      return panellayout;
+    },
+    keyfontsize() {
+      return this.scale + this.zoom;
     }
   },
   beforeCreate: function() {
@@ -156,16 +170,6 @@ export default {
     //console.log("destoryed");
   },
   methods: {
-    showKeyConf(key, $event) {
-      let targetdom =  $event.target;
-      let confboxdom = this.$el.querySelector("#key_conf");
-      confboxdom.style.display = "block";
-      confboxdom.style.left = (targetdom.offsetLeft - (confboxdom.offsetWidth - targetdom.offsetWidth) / 2) + "px";
-      confboxdom.style.top = (targetdom.offsetTop - confboxdom.offsetHeight - 2) + "px";
-    },
-    hideKeyConf() {
-      this.$el.querySelector("#key_conf").style.display = "none";
-    },
     selfDestroy: function() {
       this.$destroy();
     },
@@ -175,18 +179,28 @@ export default {
         var objkey = null;
         lc = lc.toString();
         if (!data[lc]) {
-          objkey = this.$el.querySelector(
-            ".device-le[data-location='" + lc + "']"
-          );
-          if (objkey) objkey.style.setProperty("background-color", "#000");
+          objkey = this.$el.querySelector(".device-key[data-location='" + lc + "']");
+          if (objkey){
+            objkey.style.setProperty("box-shadow", 'none');
+            objkey.style.setProperty("color", "#000");
+          }
         }
       }
       for (var leitem in data) {
-        objkey = this.$el.querySelector(
-          ".device-le[data-location='" + leitem + "']"
-        );
-        if (objkey)
-          objkey.style.setProperty("background-color", toJS(data[leitem]));
+        objkey = this.$el.querySelector(".device-key[data-location='" + leitem + "']");
+        if(!objkey) {
+          objkey = this.$el.querySelector(".device-light[data-location='" + leitem + "']");
+        }
+        if (objkey){
+          //objkey.style.setProperty("border-color", toJS(data[leitem]));
+          objkey.style.setProperty("color", toJS(data[leitem]));
+          //objkey.style.setProperty("border-color", toJS(data[leitem]));
+          if(objkey.classList.contains('device-light')){
+            objkey.style.setProperty("text-shadow", '0 0 20px '+toJS(data[leitem]));
+          }else{
+            objkey.style.setProperty("box-shadow", '0 0 10px '+toJS(data[leitem]));
+          }
+        }
       }
     },
     stopLe() {
@@ -196,7 +210,7 @@ export default {
         var lc = this.keys[i].LocationCode;
         lc = lc.toString();
         var objkey = this.$el.querySelector(
-          ".device-le[data-location='" + lc + "']"
+          ".device-key[data-location='" + lc + "']"
         );
         if (objkey) objkey.style.setProperty("background-color", "#000");
       }
@@ -306,48 +320,58 @@ export default {
       bottom:0;
     }
     .el-col{
-      display:flex;
-      justify-content:space-between;
-      color:#00c2ff;
-      padding: 10px 20px;
-      font-size:.9rem;
+      display:flex;justify-content:space-between;color:#00c2ff;padding: 10px 20px;font-size:.9rem;
     }
   }
-  // img{
-  //   z-index: 0;
-  // }
 }
-.device-le {
-  justify-content: center;
-  text-align: center;
+.key-panel {
   position: absolute;
-  background-color: green;
-  color: black;
+  background-color: #463973;
+  border-color: #2e2640;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 8px 10px 15px 10px;
+  display: inline-grid;
+  grid-template-columns: repeat(36,1fr);
+  grid-template-rows: repeat(5,1fr);
+  padding: 5px;
+  user-select: none;
+  box-sizing: border-box;
+  box-shadow: 0 0 2em #00c2ff;
 }
 .device-key {
-  justify-content: center;
-  text-align: center;
   position: absolute;
-  color: yellow;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  padding: 2px;
+  border-color: #382e59 #2e2640;
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 3px 5px 8px 5px;
+  color: #bbadd9;
+  display: block;
+  font-size: 1rem;
+  font-weight: normal;
+  //grid-column-end: span 2;
+  //margin: 3px;
+  //padding-top: 2px;
+  //@at-rootpadding: 5px;
+  text-align: center;
+  text-transform: uppercase;
+  transition: all 50ms ease-out;
+  will-change: box-shadow,color,text-shadow;
   box-sizing: border-box;
-  &:hover {
-    box-shadow: 0px 0px 2px 2px #FC6621;
-    background-color: rgba(252, 102, 33, 0.3);
-  }
-  &.active {
-    border:0px solid #ff00ff!important;
-    box-sizing: border-box!important;
-    box-shadow:0px 0px 0px 2px #ff00ff!important;
+  background-color: #202020;
+}
+.device-light {
+  position: absolute;
+  display:flex;
+  font-size: 1rem;
+  font-weight: 800;
+  align-items: center;
+  text-align: center;
+  p{
+    margin: 0 auto;
   }
 }
 .device-key > p {
-  color: white;
   margin: 0;
-  width: 100%;
-  height: 100%;
 }
 </style>

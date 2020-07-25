@@ -1,5 +1,6 @@
 module.exports = {
-  publicPath: "./"
+  publicPath: "./",
+  productionSourceMap: true
   // baseUrl: './',
   // outputDir: 'dist',
   // lintOnSave: true,

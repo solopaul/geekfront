@@ -59,9 +59,13 @@ window.initDeviceProfileList = function (deviceid) {
   return new Promise(function(resolve) {
     window.getProfileList(deviceid, function (data) {
       resolve(data);
-      //getDefaultProfiles(function(){initProfiles(true)});
     });
   });
-  // getModelProfiles(deviceid);
-  // getModelInfoByDid(deviceid);
+}
+window.initUserConfig = () => {
+  return new Promise(function(resolve) {
+    window.readUserConfig(data => {
+      resolve(data);
+    })
+  });
 }

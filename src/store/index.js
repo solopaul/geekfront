@@ -27,6 +27,7 @@ const store = new Vuex.Store({
     },
     env: {},
     appconf: {},
+    userconfig: {},
     devicelist: [],
     deviceconf: {},
     lelist: [],
@@ -36,7 +37,9 @@ const store = new Vuex.Store({
       config: {},
       keymap: [],
       profilelist: [],
-      curprofile: {},
+      curprofile: {
+        ModeIndex: 0
+      },
       fwversion: {},
       curplayle: ""
     },
@@ -82,6 +85,9 @@ const store = new Vuex.Store({
     },
     setCurPlayLe(state, data) {
       state.device.curplayle = data;
+    },
+    setUserConfig(state, data) {
+      state.userconfig = data;
     },
     updateAppConf(state, data) {
       window.writeAppConfig(data, () => {
