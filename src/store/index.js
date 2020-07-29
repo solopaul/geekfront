@@ -3,7 +3,6 @@ import Vuex from "vuex";
 
 //挂载Vuex
 Vue.use(Vuex);
-
 //创建VueX对象
 const store = new Vuex.Store({
   state: {
@@ -37,7 +36,7 @@ const store = new Vuex.Store({
       config: {},
       keymap: [],
       profilelist: [],
-      curprofile: {
+      profile: {
         ModeIndex: 0
       },
       fwversion: {},

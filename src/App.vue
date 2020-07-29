@@ -90,6 +90,9 @@ export default {
         window.readProfile(curdevid, curpfguid, (data)=>{
           console.log(11111,typeof data, JSON.stringify(data));
           this.$store.commit('setCurProfile', data);
+          this.$nextTick(()=>{
+            this.$EventBus.$emit("profileChange");
+          });
           this.$store.commit('setCurFWVersion', resdev[3]);
           // console.log("profile0:",JSON.stringify(data,null,2));
           // console.log("device:",JSON.stringify(this.$store.state.device))

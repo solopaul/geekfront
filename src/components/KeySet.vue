@@ -12,7 +12,7 @@
               style="height:200px;"
             >
               <span slot="label" class="tab-icon">
-                <i :class="itempanel.icon"></i> {{ itempanel.title }}
+                <i :class="itempanel.icon"></i> {{ $t("keyset")[itempanel.lang] }}
               </span>
               <div class="keyset-row" v-for="itemline in itempanel.keys" :key="itemline.index">
                 <el-button
@@ -27,10 +27,10 @@
                     <template
                       v-if="system != '' && itemkey['LangTitle' + system]"
                     >
-                      {{ itemkey["LangTitle" + system] }}
+                      {{ $t("keys")[itemkey["LangTitle" + system]] }}
                     </template>
                     <template v-else>
-                      {{ itemkey.Name }}
+                      {{ $t("keys")[itemkey.LangTitle] }}
                     </template>
                   </template>
                 </el-button>

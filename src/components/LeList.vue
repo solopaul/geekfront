@@ -20,7 +20,7 @@
             <span class="desc">
               {{item.Name}}
             </span>
-            <span class="el-icon-check btn"></span>
+            <span class="el-icon-check btn" @click="onSetLe(item)"></span>
           </li>
         </ul>
       </slot>
@@ -49,10 +49,18 @@ export default {
   props: {},
   mounted() {
     this.leCtrlChange();
+    this.$EventBus.$on("profileChange", () => {
+      this.$nextTick(()=>{
+        this.leCtrlChange();
+      });
+    });
   },
   methods: {
     onSelectLe(val){
       this.$emit("onSelect", val);
+    },
+    onSetLe(val){
+      this.$EventBus.$emit("setLe", val);
     },
     filterChange(filter){
       console.log("dddddd:",filter);

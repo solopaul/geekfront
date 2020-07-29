@@ -1,49 +1,65 @@
 <template>
   <ul class="sp-list lectrl" :style="{height: 'auto', 'overflow-y':'auto'}">
-    <li class="item" v-for="(item,idx) in list" :key="item.GUID" :class="{'selected': item.GUID == current }" @click="ChangeSel(item.GUID)">
+    <li class="item" v-for="(item,idx) in list" :key="idx" :class="{'selected': idx == current }" @click="ChangeSel(idx)">
       <span class="ol">{{idx+1}}</span>
       <span class="desc">
-        {{item.Name}}
+        {{item.Name ? item.Name : "未设置"}}
       </span>
-      <span class="el-icon-delete btn"></span>
+      <span class="el-icon-delete btn" @click="setCurrent(idx, '', '')"></span>
     </li>
   </ul>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: "LeCtrl",
   components: {
   },
   data() {
     return {
-      list: [
-        {"GUID":"MACICE01-BULE-4E04-BB6F-C72C7A650F85","Name":"Macice Blue"},
-        {"GUID":"014D58A9-7E44-43c7-BA92-1063623B02DD","Name":"RGB渐变"},
-        {"GUID":"1B6DB72C-6093-43ac-B4BC-59670CA31696","Name":"光谱循环"},
-        {"GUID":"7E8488C3-EB93-46a8-B505-F9E95FD67322","Name":"风车"},
-        {"GUID":"B09FC694-4B0E-4fcb-83E7-8EB4A77E566A","Name":"彩虹波"}
-      ],
-      current: "014D58A9-7E44-43c7-BA92-1063623B02DD"
+      list: [],
+      current: 0
     };
   },
   props: {
   },
   mounted() {
-    setTimeout(()=>{
-      // this.list.splice(1,2)
+    this.$EventBus.$on("profileChange", () => {
+      this.list = this.device.profile.ModeIndex == 1 ? this.device.profile.DriverLE : [this.device.profile.ModeLE];
+      this.ChangeSel(0);
+    });
+    this.$EventBus.$on("setLe", (le) => {
+      this.setCurrent(this.current, le.Name, le.GUID);
     });
   },
   methods: {
     ChangeSel(val){
       this.current = val;
-      this.$emit("onChange", this.current);
+      this.$emit("onChange", this.list[this.current].GUID);
+    },
+    setCurrent(idx, name, guid){
+      console.log(this.current)
+      // this.list.forEach((item,idx) => {
+      //   if(idx == this.current){
+      //     this.list[idx].Name = name;
+      //     this.list[idx].GUID = guid;
+      //   }
+      // });
+      this.list[idx].Name = name;
+      this.list[idx].GUID = guid;
     }
   },
   computed:{
+    ...mapState(["device"])
+  },
+  watch:{
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.lectrl.sel {
+  transition: height 1.5s ease-in-out;
+}
 </style>
