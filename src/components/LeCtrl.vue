@@ -62,4 +62,8 @@ export default {
 .lectrl.sel {
   transition: height 1.5s ease-in-out;
 }
+.sp-list li.item.selected {
+  background-image: linear-gradient(20deg, rgba(0,194,255,0.4), rgba(0,255,0,0.4), rgba(0, 78, 255, 0.43))
+  // box-shadow: aqua 0 0 5px;
+}
 </style>

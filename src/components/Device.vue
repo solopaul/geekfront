@@ -40,14 +40,15 @@
           <el-radio-button label="50">正常</el-radio-button>
           <el-radio-button label="100">慢速</el-radio-button>
         </el-radio-group>
-        <el-popover
-          placement="bottom-end"
-          title="标题"
-          width="200"
-          trigger="click"
-          content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
-          <el-button class="el-icon-setting" type="text" slot="reference">设置</el-button>
-        </el-popover>
+        <el-dropdown trigger="click">
+          <span class="el-dropdown-link">
+            <i class="el-icon-arrow-down el-icon-setting"></i>设置
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item icon="el-icon-delete">清除配置</el-dropdown-item>
+            <el-dropdown-item icon="el-icon-refresh">恢复出厂</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </el-col>
     </el-row>
     <el-row class="dev-ctrls btm">
