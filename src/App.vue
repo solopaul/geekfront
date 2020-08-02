@@ -26,6 +26,7 @@ export default {
       window.initMacroList(),
       window.initUserConfig()
     ]).then((res) => {
+      this.$i18n.locale = res[1].Language;
       this.$store.commit('initEnvConf', res[0]);
       this.$store.commit('initAppConf', res[1]);
       this.$store.commit('initDeviceList', res[2]);
@@ -79,18 +80,25 @@ export default {
         this.$store.commit('setCurConfig', resdev[0]);
         this.$store.commit('setCurKeymap', resdev[1]);
         this.$store.commit('setCurProfileList', resdev[2]);
-        console.log(666,JSON.stringify(resdev[2],null,2))
+        // console.log(666,JSON.stringify(resdev[2],null,2))
         // console.log(333,JSON.stringify(this.$store.state.userconfig, null, 2));
         // console.log(5444,this.$store.state.userconfig.ModelInit[curdevid].Mode);
         // 初始化机型数据
         if(!this.$store.state.userconfig.ModelInit[curdevid]){
           //initdevdata()
+          this.$store.state.userconfig.ModelInit[curdevid] = {
+            Mode: 1
+          }
+          window.writeUserConfig(this.$store.state.userconfig, (data)=>{
+            console.log("初始化机型数据成功", data);
+          })
         }
         let curpfguid = this.getProfileGuidByModeIndex(resdev[2], this.$store.state.userconfig.ModelInit[curdevid].Mode);
         window.readProfile(curdevid, curpfguid, (data)=>{
-          console.log(11111,typeof data, JSON.stringify(data));
+          // console.log(11111,typeof data, JSON.stringify(data));
           this.$store.commit('setCurProfile', data);
           this.$nextTick(()=>{
+            this.$EventBus.$emit("initProfile", curpfguid);
             this.$EventBus.$emit("profileChange");
           });
           this.$store.commit('setCurFWVersion', resdev[3]);

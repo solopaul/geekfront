@@ -140,7 +140,7 @@ export default {
       panellayout.top = (temptopmin) * (this.scale + this.zoom) + this.offsettop - 15;
       panellayout.width = (templeftmax - templeftmin) * (this.scale + this.zoom) + 28;
       panellayout.height = (temptopmax - temptopmin) * (this.scale + this.zoom) + 40;
-      console.log(templeftmax-templeftmin,temptopmax-temptopmin);
+      // console.log(templeftmax-templeftmin,temptopmax-temptopmin);
       return panellayout;
     },
     keyfontsize() {
@@ -151,7 +151,6 @@ export default {
     //console.log("before create");
   },
   created: function() {
-    console.log("created");
     //this.zoom = this.zoomin;
     this.playspeed = this.lespeed ? this.lespeed : 100;
   },

@@ -2,7 +2,7 @@
 <div>
   <div class="search-box">
     <el-input :placeholder="search.placeholder" v-model="searchText" suffix-icon="el-icon-search" class="input-with-select" clearable>
-      <el-select v-model="selCate" @change="onSelect" slot="prepend" :placeholder="cate.placeholder" clearable>
+      <el-select v-model="selCate" @change="onSelect" slot="prepend" :placeholder="cate.placeholder" clearable :disabled="cate.disablecate">
         <i slot="prefix" class="el-input__icon el-icon-filter"></i>
         <el-option v-for="(item,idx) in cate.list" :key="idx" :label="item[cate.title]" :value="item[cate.key]" style="max-width: 200px;"></el-option>
       </el-select>

@@ -2,27 +2,27 @@
   <div class="settings-box">
     <el-form ref="form_settings" :model="settings" label-position="left" label-width="90px" label-suffix=" : ">
       <el-form-item label="软件版本">
-        {{$store.state.appconf.SoftVersion}}
+        {{appconf.SoftVersion}}
         <el-button type="text" class="el-icon-refresh"> 检测</el-button>
       </el-form-item>
       <el-form-item label="语言设置">
-        <el-select v-model="$store.state.appconf.Language" @change="setLang" placeholder="请选择语言">
+        <el-select v-model="appconf.Language" @change="setLang" placeholder="请选择语言">
           <el-option label="中文" value="zh"></el-option>
           <el-option label="英文" value="en"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="显示设置">
-        <el-select v-model="$store.state.appconf.Language" @change="setLang" placeholder="请选择">
-          <el-option label="1200*900" value="zh"></el-option>
-          <el-option label="1024*768" value="en"></el-option>
-          <el-option label="1920*1080" value="en"></el-option>
+        <el-select v-model="appconf.Screen" @change="setScreen" placeholder="请选择">
+          <el-option label="1200*900" value="0"></el-option>
+          <el-option label="1024*768" value="1"></el-option>
+          <el-option label="1920*1080" value="2"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item v-if="true" label="开机启动">
         <el-switch v-model="settings.openwith"></el-switch>
       </el-form-item>
       <el-form-item v-if="true" label="布局">
-        <el-radio-group v-model="$store.state.window.layout" @change="setLayout" size="mini" >
+        <el-radio-group v-model="window.layout" @change="setLayout" size="mini" >
           <el-radio label="row">左右布局</el-radio>
           <el-radio label="row-reverse">右左布局</el-radio>
         </el-radio-group>
@@ -41,7 +41,7 @@
       </el-form-item>
       <el-form-item label="支持机型">
         <div class="support">
-          <span class="item" v-for="(model,index) in $store.state.devicelist" :key="model.ModelID">{{model.Name}}<el-divider v-if="index != $store.state.devicelist.length - 1" direction="vertical"></el-divider></span>
+          <span class="item" v-for="(model,index) in devicelist" :key="model.ModelID">{{model.Name}}<el-divider v-if="index != devicelist.length - 1" direction="vertical"></el-divider></span>
         </div>
       </el-form-item>
     </el-form>
@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default {
   name: "Settings",
   data() {
@@ -91,20 +92,28 @@ export default {
   },
   created() {},
   mounted() {
-    this.skinpath = this.$store.state.appconf.Skin.path;
+    this.skinpath = this.appconf.Skin.path;
+    this.$i18n.locale = this.appconf.Language ? this.appconf.Language : "en";
   },
-  computed: {},
+  computed: {
+    ...mapState(["appconf", "window", "devicelist"]),
+  },
   methods: {
     setLang(langkey) {
-      let conf = JSON.parse(JSON.stringify(this.$store.state.appconf));
+      let conf = JSON.parse(JSON.stringify(this.appconf));
       conf.Language = langkey;
+      this.$i18n.locale = langkey;
       this.$store.commit('updateAppConf', conf);
     },
     setSkin(itemskin) {
       this.skinpath = itemskin.path;
-      let conf = JSON.parse(JSON.stringify(this.$store.state.appconf));
+      let conf = JSON.parse(JSON.stringify(this.appconf));
       conf.Skin = itemskin;
       this.$store.commit('updateAppConf', conf);
+    },
+    setScreen(val) {
+      this.appconf.Screen = val;
+      this.$store.commit('updateAppConf', this.appconf);
     },
     setLayout(val) {
       localStorage.setItem('layout', val);

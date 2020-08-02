@@ -7,7 +7,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     name: "geekx",
-    devdir: 'D:/jizhi/GK6X-Release/CMSEngine/driver/device/',
+    frontdir: process.env.VUE_APP_DEBUG_PATH,
     window: {
       height: document.documentElement.clientHeight || document.body.clientHeight,
       width: document.documentElement.clientWidth || document.body.clientWidth,

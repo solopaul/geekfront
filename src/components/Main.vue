@@ -1,26 +1,26 @@
 <template>
   <el-container v-loading="loading" :style="{'background-color': 'rgba(32,35,43,.75)'}">
     <cms-header @mousedown.native="dragWin"></cms-header>
-    <el-main :style="{'flex-direction': $store.state.window.layout}">
-      <div class="flex-left" :style="{width: $store.state.window.leftSideWidth + 'px'}">
+    <el-main :style="{'flex-direction': window.layout}">
+      <div class="flex-left" :style="{width: window.leftSideWidth + 'px'}">
         <cms-lelist v-if="true" @onSelect="selectLe"></cms-lelist>
         <cms-profilelist v-if="false"></cms-profilelist>
         <cms-macrolist v-if="true"></cms-macrolist>
       </div>
-      <div class="flex-right" :style="{width: 'calc(100% - ' + ($store.state.window.leftSideWidth + 10) + 'px)'}">
-        <section v-loading="!$store.state.isDevReady" class="box-device" :style="{width: '100%', height: ($store.state.window.height - 100 - 300 - 30) + 'px;'}">
+      <div class="flex-right" :style="{width: 'calc(100% - ' + (window.leftSideWidth + 10) + 'px)'}">
+        <section v-loading="!isDevReady" class="box-device" :style="{width: '100%', height: (window.height - 100 - 300 - 30) + 'px;'}">
           <cms-device
             ref="dev"
-            v-if="$store.state.isDevReady"
-            :keys="$store.state.device.keymap"
+            v-if="isDevReady"
+            :keys="device.keymap"
             :orgwidth="dev.orgwidth"
             :orgheight="dev.orgheight"
             :zoomin="dev.zoomin"
-            :keycap="require('D:/jizhi/GK6X-Release/CMSEngine/driver/device/' + $store.state.curdevice.ModelID + '/img/device_panel.png')"
-            :panel="require('D:/jizhi/GK6X-Release/CMSEngine/driver/device/' + $store.state.curdevice.ModelID + '/img/device_keycap.png')"
-            :outline="require('D:/jizhi/GK6X-Release/CMSEngine/driver/device/' + $store.state.curdevice.ModelID + '/img/device_outline.png')"
-            :showwidth="parseInt($store.state.window.width - $store.state.window.leftSideWidth - 30)"
-            :showheight="parseInt($store.state.window.height - 100 - 300 - 30)"
+            :keycap="deviceshow.keycap"
+            :panel="deviceshow.panel"
+            :outline="deviceshow.outline"
+            :showwidth="parseInt(window.width - window.leftSideWidth - 30)"
+            :showheight="parseInt(window.height - 100 - 300 - 30)"
             :lespeed="parseInt(100)"
           ></cms-device>
           <div v-if="false" class="dev-normal" style="width:100%;height:calc(100vh - 420px);background:#fff;" :style="{'background-image': 'url('+ require('../assets/skin/bg24.jpg')+')'}">
@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import Header from './Header';
 import Footer from './Footer';
 import LeList from './LeList';
@@ -67,11 +68,24 @@ export default {
     'cms-device': Device,
     'cms-keyset': KeySet
   },
+  computed: {
+    ...mapState(["isDevReady", "device", "curdevice", "window", "devicelist", "frontdir"]),
+    deviceshow: function(){
+      let keycappath = this.frontdir + '/device/' + this.curdevice.ModelID + '/img/device_keycap.png';
+      let panelpath = this.frontdir + '/device/' + this.curdevice.ModelID + '/img/device_panel.png';
+      let outlinepath = this.frontdir + '/device/' + this.curdevice.ModelID + '/img/device_outline.png';
+      return {
+        keycap: keycappath,
+        panel: panelpath,
+        outline: outlinepath
+      }
+    }
+  },
   mounted(){
-      // let devdir = this.$store.state.devdir;
-      // let devid = this.$store.state.curdevice.ModelID;
+      // let devdir = this.devdir;
+      // let devid = this.curdevice.ModelID;
       this.dev = {
-        keymap: this.$store.state.device.keymap,
+        keymap: this.device.keymap,
         orgwidth: 1200,
         orgheight: 600,
         zoomin: 0,
@@ -83,8 +97,8 @@ export default {
         // img_panel: require('../device/655491172/img/device_panel.png'),
         // img_keycap: require('../device/655491172/img/device_keycap.png'),
         // img_outline: require('../device/655491172/img/device_outline.png'),
-        // showwidth: parseInt(this.$store.state.window.width - this.$store.state.window.leftSideWidth - 30),
-        // showheight: parseInt(this.$store.state.window.height - 100 - 300 - 30),
+        // showwidth: parseInt(this.window.width - this.window.leftSideWidth - 30),
+        // showheight: parseInt(this.window.height - 100 - 300 - 30),
         // lespeed: 100
       }
   },
@@ -95,10 +109,8 @@ export default {
     selectLe(val){
       this.$store.commit("setCurPlayLe", val);
       window.readLE(val, (data) => {
-        console.log(data);
         this.$refs.dev.playLe(data);
       });
-      console.log(val);
     }
   }
 }

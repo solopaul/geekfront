@@ -2,7 +2,7 @@
   <div>
     <el-header ref="header" class="head-box">
       <div class="menu-left">
-        <img class="logo" src="../assets/img/logo.png" alt="">
+        <img class="logo" :src="frontdir + '/res/img/logo.png'" alt="">
         <el-menu
         default-active="1"
         class="el-menu-demo"
@@ -20,9 +20,8 @@
       <div class="menu-right">
         <div class="switch-box">
             <el-carousel arrow="hover" type="card" :autoplay="false" @change="changeDevice" indicator-position="none" height="60px">
-                <el-carousel-item v-for="item in $store.state.devicelist" :key="item.Name">
-                    <!-- <img src="../assets/img/device.png" :alt="item.Name"> -->
-                    <img :src="'device/' + item.ModelID + '/device.png'" @error="setDefaultImg($event)" :alt="item.Name">
+                <el-carousel-item v-for="item in devicelist" :key="item.Name">
+                    <img :src="frontdir + '/device/' + item.ModelID + '/device.png'" @error="setDefaultImg($event)" :alt="item.Name">
                 </el-carousel-item>
             </el-carousel>
         </div>
@@ -51,6 +50,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import Settings from './Settings';
 export default {
   name: 'Header',
@@ -61,6 +61,9 @@ export default {
   },
   components: {
     'cms-settings': Settings
+  },
+  computed: {
+    ...mapState(["devicelist", "frontdir"])
   },
   mounted(){
   },
@@ -75,7 +78,7 @@ export default {
       window.closeCMSUI();
     },
     changeDevice(val) {
-      this.$store.commit("setCurDevice", this.$store.state.devicelist[val]);
+      this.$store.commit("setCurDevice", this.devicelist[val]);
     },
     setDefaultImg($event) {
       $event.target.src = require('../assets/img/device.png');

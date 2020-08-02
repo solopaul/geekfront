@@ -72,7 +72,6 @@ export default {
   },
   methods: {
     changeCate(val){
-      console.log(val);
       this.selectMacroCate = val;
       this.curList = this.$store.state.macrolist[this.selectMacroCate].Data;
     }

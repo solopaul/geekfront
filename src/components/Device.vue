@@ -17,9 +17,8 @@
       :key="'key'+idx"
       :id="'key'+key.LogicCode"
       class="device-key"
-      v-bind:class="{'noshowkeyset': true, 'current': currentkey == key.LogicCode, 'fnsel': (fnmode && key.LogicCode == 0)}"
       @mouseover="showKeyConf(key,$event)"
-      @click="setCurrentKey(key.LogicCode)"
+      @click="selCurrentKey(key.LogicCode)"
       :style="{'left': key.Position.Left + 'px', 'top': key.Position.Top + 'px', 'width': key.Position.Width + 'px', 'height': key.Position.Height + 'px', 'transform': 'rotate(' + key.Position.Rotate + 'deg)', 'font-size': ((zoom + 1) * 0.8) + 'em'}" :data-logic="key.LogicCode"
       >
     </div>
@@ -41,7 +40,7 @@
           <el-radio-button label="100">慢速</el-radio-button>
         </el-radio-group>
         <el-dropdown trigger="click">
-          <span class="el-dropdown-link">
+          <span class="el-dropdown-link" style="color:#00c2ff;cursor:pointer;">
             <i class="el-icon-arrow-down el-icon-setting"></i>设置
           </span>
           <el-dropdown-menu slot="dropdown">
@@ -57,7 +56,7 @@
           <el-radio-button v-for="item in profilelist" :key="item.GUID" :label="item.GUID">{{$t("common")[item.Name]}}</el-radio-button>
         </el-radio-group>
         <div>
-          <el-button type="default" icon="el-icon-check">{{$t("common.save")}}</el-button>
+          <el-button type="default" icon="el-icon-check" :class="{'btn-breath': pfchanged}">{{$t("common.save")}}</el-button>
           <el-button type="primary" icon="el-icon-download">{{$t("common.apply")}}</el-button>
         </div>
       </el-col>
@@ -69,6 +68,7 @@
 import { toJS, fromRGB, toHSB, fromHSB } from "../util/color.js";
 import { compare } from "../util/util.js";
 import { mapState } from 'vuex';
+// import keyfunc from "./config/keyfunc.js";
 export default {
   name: "Device",
   data() {
@@ -79,7 +79,9 @@ export default {
       playspeed: 100,
       modeidx: "",
       fnmode: false,
-      currentkey: null
+      currentkey: null,
+      classseted: ["seted", "seted", "seted"],
+      pfchanged: false
     }
   },
   props: {
@@ -99,12 +101,40 @@ export default {
       if(nval != oval){
         this.initProfile(this.device.profile);
       }
+    },
+    "fnmode": function(nval){
+      if(nval){
+        this.setClassByLogicCode(0, "fnsel", "add");
+      }else{
+        this.setClassByLogicCode(0, "fnsel", "remove");
+      }
+    },
+    "currentkey": function(nval){
+      this.device.keymap.forEach(item => {
+        this.setClassByLogicCode(item.LogicCode, "current", "remove");
+      })
+      if(this.currentkey){
+        this.setClassByLogicCode(nval, "current", "add");
+      }else{
+        this.setClassByLogicCode(nval, "current", "remove");
+      }
+    },
+    "device.profile": {
+      deep: true,
+      handler(nval){
+        console.log("pfchanged")
+        if(JSON.stringify(nval) != JSON.stringify(window.cprofile)){
+          this.pfchanged = true;
+        }else{
+          this.pfchanged = false;
+        }
+      }
     }
   },
   computed: {
     ...mapState(["curdevice", "device", "userconfig"]),
     profilelist: function() {
-      let pflist = this.$store.state.device.profilelist ? this.$store.state.device.profilelist : [];
+      let pflist = this.device.profilelist ? this.device.profilelist : [];
       pflist = pflist.sort(compare("ModeIndex", true));
       let pfonline = [];
       let pfonboard = [];
@@ -158,24 +188,28 @@ export default {
       return this.zoomin + ((this.zoomoffset - 50) / 50);
     },
     fwversion(){
-      return this.$store.state.device.fwversion && this.$store.state.device.fwversion.FWVersion ? this.$store.state.device.fwversion.FWVersion : "加载中";
+      return this.device.fwversion && this.device.fwversion.FWVersion ? this.device.fwversion.FWVersion : "加载中";
+    },
+    keysettype(){
+      return this.fnmode ? "FnKeySet" : "KeySet";
     }
   },
   beforeCreate: function() {
     //console.log("before create");
   },
   created: function() {
-    console.log("created");
-    //this.zoom = this.zoomin;
     this.playspeed = this.lespeed ? this.lespeed : 100;
   },
   beforeMount: function() {
     //console.log("before mount");
   },
   mounted: function() {
-    //console.log("mounted");
-    // let ledata = {"Frames":[{"Count":1,"Data":{"0":"0xffffff","1":"0xffffff","2":"0xffffff","3":"0xffffff","4":"0xffffff","5":"0xffffff","6":"0xffffff","7":"0xffffff","8":"0xffffff","9":"0xffffff","10":"0xffffff","11":"0xffffff","12":"0xffffff","13":"0xffffff","14":"0xffffff","15":"0xffffff","16":"0xffffff","17":"0xffffff","18":"0xffffff","19":"0xffffff","20":"0xffffff","21":"0xffffff","22":"0xffffff","23":"0xffffff","24":"0xffffff","25":"0xffffff","26":"0xffffff","27":"0xffffff","28":"0xffffff","29":"0xffffff","30":"0xffffff","31":"0xffffff","32":"0xffffff","33":"0xffffff","34":"0xffffff","35":"0xffffff","36":"0xffffff","37":"0xffffff","38":"0xffffff","39":"0xffffff","40":"0xffffff","41":"0xffffff","42":"0xffffff","43":"0xffffff","44":"0xffffff","45":"0xffffff","46":"0xffffff","47":"0xffffff","48":"0xffffff","49":"0xffffff","50":"0xffffff","51":"0xffffff","52":"0xffffff","53":"0xffffff","54":"0xffffff","55":"0xffffff","56":"0xffffff","57":"0xffffff","58":"0xffffff","59":"0xffffff","60":"0xffffff","61":"0xffffff","62":"0xffffff","63":"0xffffff","64":"0xffffff","65":"0xffffff","66":"0xffffff","67":"0xffffff","68":"0xffffff","69":"0xffffff","70":"0xffffff","71":"0xffffff","72":"0xffffff","73":"0xffffff","74":"0xffffff","75":"0xffffff","76":"0xffffff","77":"0xffffff","78":"0xffffff","79":"0xffffff","80":"0xffffff","81":"0xffffff","82":"0xffffff","83":"0xffffff","84":"0xffffff","85":"0xffffff","86":"0xffffff","87":"0xffffff","88":"0xffffff","89":"0xffffff","90":"0xffffff","91":"0xffffff","92":"0xffffff","93":"0xffffff","94":"0xffffff","95":"0xffffff","96":"0xffffff","97":"0xffffff","98":"0xffffff","99":"0xffffff","100":"0xffffff","101":"0xffffff","102":"0xffffff","103":"0xffffff","104":"0xffffff","105":"0xffffff","106":"0xffffff","107":"0xffffff","108":"0xffffff","109":"0xffffff","110":"0xffffff","111":"0xffffff","112":"0xffffff","113":"0xffffff","114":"0xffffff","115":"0xffffff","116":"0xffffff","117":"0xffffff","118":"0xffffff","119":"0xffffff","120":"0xffffff","121":"0xffffff","122":"0xffffff","123":"0xffffff","124":"0xffffff","125":"0xffffff","126":"0xffffff","127":"0xffffff","128":"0xffffff","129":"0xffffff","130":"0xffffff","131":"0xffffff"},"Name":"frame0"}],"GUID":"2B09E183-E827-49a3-84CC-B3350B8F4A83","LEConfigs":[{"Color":"0xff0000","Count":60,"Keys":[70,91,111,69,90,88,110,68,49,89],"Type":1},{"Color":"0xff0099","Count":60,"Keys":[67,66,47,45,44,46,48,49,22,23],"Type":1},{"Color":"0xcc00ff","Count":60,"Keys":[0,24,25,2,3,26,4,27,50,5,28,1],"Type":1},{"Color":"0x3300ff","Count":60,"Keys":[7,29,8,30,9,10,31,6],"Type":1},{"Color":"0x0066ff","Count":60,"Keys":[51,32,11,12,33,34,13,14,15,52,16,17,18,19],"Type":1},{"Color":"0x00ffff","Count":60,"Keys":[53,54,55,56,58,36,59,37,38,39,60,61,40,41,42,43,62,63,64,52,20,21,35,57],"Type":1},{"Color":"0x00ff66","Count":60,"Keys":[75,76,77,79,84,85,86,65,109,78,80,81,83],"Type":1},{"Color":"0x33ff00","Count":60,"Keys":[99,102,104,106,107,108,130,128,127,126,125,75,98,100,101,103],"Type":1},{"Color":"0xccff00","Count":60,"Keys":[124,122,121,120,98,97,74,123],"Type":1},{"Color":"0xff9900","Count":60,"Keys":[96,73,72,95,119,118],"Type":1},{"Color":"0xff0000","Count":60,"Keys":[116,94,71,70,93,92,112,113,115],"Type":1}],"Name":"风车1"}
-    // this.playLe(ledata);
+    this.$EventBus.$on("changeKeyFunc", (keyitem) => {
+      this.setKeyFunc(keyitem);
+    });
+    this.$EventBus.$on("initProfile", (pfguid) => {
+      this.changeProfile(pfguid);
+    });
   },
   beforeDestroy: function() {
     //console.log("before destory");
@@ -317,18 +351,46 @@ export default {
     formatZoomOffset(val) {
       return (1 + (val - 50) / 50).toFixed(2) + "X";
     },
-    setCurrentKey(lcode){
-      if(lcode > 0){
+    selCurrentKey(lcode){
+      if(lcode > 0 && this.hasKeySet(lcode)){
         this.currentkey = (lcode == this.currentkey ? null : lcode);
       } else if(lcode == 0){
         this.fnmode = !this.fnmode;
+        this.currentkey = null;
+        this.initProfile(this.device.profile);
       }
+    },
+    setClassByLogicCode(lcode, cls, type){
+      var obj = this.$el.querySelector('#key' + lcode);
+      if(obj){
+        if(type == "add"){
+          if(!obj.classList.contains(cls)){
+            obj.classList.add(cls);
+          }
+        }else if(type == "remove"){
+          if(obj.classList.contains(cls)){
+            obj.classList.remove(cls);
+          }
+        }
+      }
+    },
+    hasKeySet(lcode){
+      let haskey = false;
+      this.device.profile[this.keysettype] && this.device.profile[this.keysettype].forEach(item => {
+        if(item.Index == lcode){
+          haskey = true;
+        }
+      })
+      return haskey;
     },
     //profile
     changeProfile(guid) {
-      console.log(333,guid, this.curdevice);
-      window.readProfile(this.curdevice.ModelID, guid, (data)=>{
+      // console.log(333,guid, this.curdevice);
+      window.readProfile(this.curdevice.ModelID, guid, (data) => {
         this.$store.commit("setCurProfile", data);
+        this.fnmode = false;
+        this.currentkey = null;
+        this.pfchanged = false;
         this.initProfile(data);
         this.$EventBus.$emit("profileChange");
         window.cprofile = JSON.parse(JSON.stringify(data));
@@ -339,8 +401,6 @@ export default {
       });
     },
     initProfile(pfdetail){
-      // let fnkey = this.$el.querySelector('#key0');
-      // fnkey.classList.add("fnsel");
       this.clearProfileStat(this.device.keymap);
       if(pfdetail.ModeIndex == 1){
         this.initStdProfile(pfdetail);
@@ -349,28 +409,34 @@ export default {
       }
     },
     clearProfileStat(keymap){
-      this.currentkey = null;
-      this.fnmode = false;
       keymap.forEach((item) => {
         var obj = this.$el.querySelector('#key' + item.LogicCode);
         if(obj){
-          obj.classList.remove("current");
-          obj.classList.remove("seted");
-          obj.classList.remove("fnsel");
+          this.clearKeyStat(obj)
           obj.innerText = "";
         }
       })
+    },
+    clearKeyStat(obj){
+      let keyclasslist = obj.classList;
+      let delclasslist = [];
+      let exlist = ["device-key", "current", "fnsel"]
+      keyclasslist.forEach(item => {
+        if(exlist.indexOf(item) < 0){
+          delclasslist.push(item);
+        }
+      });
+      delclasslist.forEach(item => {
+        obj.classList.remove(item);
+      });
     },
     initStdProfile: function(pf){
       console.log(pf);
     },
     initKeyset: function(pfdetail){
-      let keytype = this.fnmode ? "FnKeySet" : "KeySet";
-      pfdetail[keytype].forEach((item)=>{
+      pfdetail[this.keysettype].forEach((item)=>{
         var obj = this.$el.querySelector('#key' + item.Index);
         if(obj){
-          obj.classList.remove("seted");
-          obj.classList.remove("current");
           obj.setAttribute("data-func", item.MenuName);
           obj.setAttribute("data-le", '');
           if(item.MenuName != ""){
@@ -427,6 +493,156 @@ export default {
       //     }
       //   }
       // });
+    },
+    setKeyFunc: function(keyconf){
+      if(this.currentkey <= 0){
+        this.$notify({
+          title: "请先选择要设置的按键",
+          type: "warning",
+          position: "bottom-left"
+        });
+        return;
+      }
+      var obj = this.$el.querySelector('#key' + this.currentkey);
+      if(obj){
+        // obj.className = "device-key current";
+        // obj.setAttribute("data-func", this.$t("keys")[keyconf.LangTitle]);
+        // obj.setAttribute("data-le", '');
+        let type = this.keysettype;
+        for(let i=0;i<this.device.profile[type].length;i++){
+          if(this.device.profile[type][i].Index == this.currentkey){
+            this.device.profile[type][i].DriverValue = keyconf.DriverValue;
+            this.device.profile[type][i].MenuName = keyconf.Name;
+            obj.setAttribute("data-func", this.$t("keys")[keyconf.LangTitle]);
+            obj.setAttribute("data-le", '');
+            obj.classList.add("seted");
+            obj.innerHTML = this.$t("keys")[keyconf.LangTitle];
+            console.log(4, this.currentkey, type,this.device.profile[type][i].MenuName,this.device.profile[type][i].DriverValue)
+          }
+        }
+        // this.initProfile(this.device.profile);
+        // if(keyfunc[keyconf.DriverValue]){
+        // console.log(1111, obj.classList,keyconf, keyfunc);
+        //   if(keyfunc[keyconf.DriverValue].Icon){
+        //     obj.classList.add(keyfunc[keyconf.DriverValue].Icon);
+        //     obj.classList.add("bold");
+        //   }else{
+        //     obj.innerText = this.$t("keys")[keyconf.LangTitle];
+        //   }
+        // }
+      }
+      // var _this = this;
+      // var keysets = [];
+      // if(_this.isfnkeyset){
+      //   keysets = DEVICE.currentProfile.FnKeySet;
+      // }else{
+      //   keysets = DEVICE.currentProfile.KeySet;
+      // }
+      // if(val == "disable_enable"){
+      //   for(var i=0;i<keysets.length;i++){
+      //     if(keysets[i].DriverValue.toString() == "0x02000000"){
+      //       window.getDefaultKeySetByLcode(keysets[i].Index,function(defaultkey){
+      //         console.log(defaultkey);
+      //         var tempkey = $("key"+keysets[i].Index);
+      //         if(tempkey){
+      //           keysets[i].MenuName = '';
+      //           keysets[i].DriverValue = defaultkey.DriverValue;
+      //           tempkey.innerHTML = "<span></span>";
+      //           tempkey.setAttribute("data-func", _this.$t('common.key_func_no_config'));
+      //           tempkey.classList.remove("seted");
+      //           if(keysets[i].KeyLE && keysets[i].KeyLE.GUID !== ''){
+      //             tempkey.classList.add("seted");
+      //           }
+      //         }
+      //       });
+      //     }
+      //   }
+      //   if(window.isKeySetChange()){
+      //     this.iskeysetchange = true;
+      //   }else{
+      //     this.iskeysetchange = false;
+      //   }
+      // }else if((val == "disable_all")
+      //   ||(val == "disable_num")
+      //   ||(val == "disable_fx")
+      //   ||(val == "disable_pad")
+      //   ||(val == "disable_letter")
+      //   ||(val == "disable_symbol")
+      //   ||(val == "disable_ctrls")
+      //   ||(val == "disable_func9")
+      //   ||(val == "disable_direction")
+      //   ){
+      //   var diskeys = window.KeyFunc[val].DriverValue.split(",");
+      //   if(val == "disable_all"){
+      //     diskeys = [];
+      //     for(var i=0;i<keysets.length;i++){
+      //       diskeys.push(keysets[i].Index.toString());
+      //     }
+      //   }
+      //   console.log(diskeys);
+      //   for(var i=0;i<keysets.length;i++){
+      //     if(diskeys.indexOf(keysets[i].Index.toString()) >= 0){
+      //       keysets[i].MenuName = window.KeyFunc["0x02000000"].Name;
+      //       keysets[i].DriverValue = window.KeyFunc["0x02000000"].DriverValue;
+      //       var tempkey = $("key"+keysets[i].Index);
+      //       if(tempkey){
+      //         tempkey.innerHTML = "<span class='hasfunc'></span>";
+      //         tempkey.classList.add("seted");
+      //         tempkey.children[0].classList.add(window.KeyFunc["0x02000000"].Icon);
+      //         tempkey.children[0].classList.add(window.KeyFunc["0x02000000"].ShowClass);
+      //         tempkey.setAttribute("data-func", _this.$t('keys')[window.KeyFunc["0x02000000"].LangTitle]);
+      //       }
+      //     }
+      //   }
+      //   if(window.isKeySetChange()){
+      //     this.iskeysetchange = true;
+      //   }else{
+      //     this.iskeysetchange = false;
+      //   }
+      // }else if(DEVICE.editKeyCode){
+      //   var selectkey = $("key"+DEVICE.editKeyCode);
+      //   if(selectkey){
+      //     if(window.KeyFunc[val]){
+      //       selectkey.innerHTML = "<span class='hasfunc'>"+ _this.$t('keys')[window.KeyFunc[val].LangTitle] +"</span>";
+      //       selectkey.setAttribute("data-func", _this.$t('keys')[window.KeyFunc[val].LangTitle]);
+      //       if(window.KeyFunc[val].Icon){
+      //         selectkey.children[0].classList.add(window.KeyFunc[val].Icon);
+      //         selectkey.children[0].innerHTML = '';
+      //       }
+      //       if(window.KeyFunc[val].ShowClass){
+      //         selectkey.children[0].classList.add(window.KeyFunc[val].ShowClass);
+      //       }
+      //     }else{
+      //       if(name.length <= 5)
+      //         selectkey.innerHTML = "<span class='hasfunc'>"+ name +"</span>";
+      //       else
+      //         selectkey.innerHTML = "<span class='hasfunc'>"+ name.substring(0,4) + '...' +"</span>";
+      //       selectkey.setAttribute("data-func", name);
+      //     }
+      //     selectkey.classList.add("seted");
+      //   }
+      //   for(var i=0;i<keysets.length;i++){
+      //     if(keysets[i].Index === DEVICE.editKeyCode){
+      //       keysets[i].MenuName = name;
+      //       keysets[i].DriverValue = val;
+      //       if(name.indexOf(".exe")>0){
+      //         keysets[i].DriverValue = "0x0A030001";
+      //         keysets[i].Task = {};
+      //         keysets[i].Task.Type = "OpenURL";
+      //         keysets[i].Task.Data = {
+      //           AppPath: val
+      //         };
+      //       }
+      //       if(window.isKeySetChange()){
+      //         this.iskeysetchange = true;
+      //       }else{
+      //         this.iskeysetchange = false;
+      //       }
+      //     }
+      //   }
+      // }else{
+      //   _this.alertInfo(_this.$t('common.key_select_attention'), 'warning', 1000);
+      // }
     }
   }
 };
@@ -468,8 +684,8 @@ export default {
   justify-content: center;
   text-align: center;
   position: absolute;
-  // display: flex;
-  // align-items: center;
+  display: flex;
+  align-items: center;
   height: 100%;
   line-height: 100%;
   align-content: center;
@@ -492,6 +708,9 @@ export default {
   &.fnsel {
     border:1px solid rgb(158, 158, 149);
     box-shadow: 0px 0px 5px 5px #00c2ff;
+  }
+  &.bold {
+    font-weight: bold;
   }
 }
 .device-key > p {

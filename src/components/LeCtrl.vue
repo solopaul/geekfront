@@ -39,7 +39,7 @@ export default {
       this.$emit("onChange", this.list[this.current].GUID);
     },
     setCurrent(idx, name, guid){
-      console.log(this.current)
+      // console.log(this.current)
       // this.list.forEach((item,idx) => {
       //   if(idx == this.current){
       //     this.list[idx].Name = name;

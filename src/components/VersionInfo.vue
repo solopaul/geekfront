@@ -16,7 +16,7 @@
           <div :class="{ current: version.type == 'success'}">
             <span>{{ version.version }}</span>
             <el-divider direction="vertical"></el-divider>
-            <span class="el-icon-download">下载</span>
+            <span class="el-icon-download" @click="openDownload" style="cursor:pointer;">下载</span>
             <el-divider direction="vertical"></el-divider>
             <span>{{ version.desc }}</span>
           </div>
@@ -34,29 +34,9 @@ export default {
     return {
       versions: [
         {
-          version: "1.0.0",
-          publish_date: "2020-05-01",
-          desc: "修复了一些已知的bug"
-        },
-        {
-          version: "1.0.1",
-          publish_date: "2020-05-02",
-          desc: "修复了一些已知的bug,添加了一些新机型，优化了显示问题"
-        },
-        {
-          version: "1.0.2",
-          publish_date: "2020-05-03",
-          desc: "修复了一些已知的bug"
-        },
-        {
-          version: "1.0.3",
-          publish_date: "2020-05-04",
-          desc: "修复了一些已知的bug"
-        },
-        {
-          version: "1.0.4",
-          publish_date: "2020-05-05",
-          desc: "修复了一些已知的bug"
+          version: "7.0.0",
+          publish_date: "2020-08-01",
+          desc: "全新改版"
         }
       ],
     };
@@ -70,7 +50,11 @@ export default {
       }
     });
   },
-  methods: {},
+  methods: {
+    openDownload(){
+      window.openURL("http://jikedingzhi.com/downloadlist?driverID=41");
+    }
+  }
 };
 </script>
 

@@ -121,8 +121,8 @@
 </template>
 
 <script>
-import keysetdata from "../assets/config/keyset.js";
-import combinekeydata from "../assets/config/combkeys.js";
+import keysetdata from "./config/keyset.js";
+import combinekeydata from "./config/combkeys.js";
 export default {
   data() {
     return {
@@ -164,7 +164,7 @@ export default {
         this.curkeytext = keyitem.Name;
         this.curkeyval = keyitem.DriverValue;
       }
-      this.$emit("changeKeyFunc", keyitem.Name, keyitem.DriverValue);
+      this.$EventBus.$emit("changeKeyFunc", keyitem);
     },
     combChange: function(val) {
       var obj = {};
