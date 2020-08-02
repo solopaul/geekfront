@@ -11,9 +11,9 @@
         background-color="rgba(32,34,43,.2)"
         text-color="#bbb"
         active-text-color="#00c2ff">
-          <el-menu-item index="1"><span class="el-icon-cpu"></span>功能配置</el-menu-item>
-          <el-menu-item v-if="false" index="2" disabled><span class="el-icon-sunrise-1"></span>灯效</el-menu-item>
-          <el-menu-item v-if="false" index="3" disabled><span class="el-icon-edit-outline"></span>宏</el-menu-item>
+          <el-menu-item index="1"><span class="el-icon-kb-keyboard"></span>{{$t("menu.menu_config_kb")}}</el-menu-item>
+          <el-menu-item v-if="true" index="2" disabled><span class="el-icon-sunrise-1"></span>{{$t("menu.menu_le_lib")}}</el-menu-item>
+          <el-menu-item v-if="true" index="3" disabled><span class="el-icon-edit-outline"></span>{{$t("menu.menu_macro_lib")}}</el-menu-item>
           <el-menu-item v-if="false" index="4" disabled><span class="el-icon-s-comment"></span>敬请期待</el-menu-item>
         </el-menu>
       </div>

@@ -41,7 +41,7 @@
         </el-radio-group>
         <el-dropdown trigger="click">
           <span class="el-dropdown-link" style="color:#00c2ff;cursor:pointer;">
-            <i class="el-icon-arrow-down el-icon-setting"></i>设置
+            <i class="el-icon-arrow-down el-icon-setting"></i>{{$t("common.set")}}
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item icon="el-icon-delete">清除配置</el-dropdown-item>

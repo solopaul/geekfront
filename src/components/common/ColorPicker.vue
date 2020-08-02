@@ -47,7 +47,7 @@
   display:inline-block;
 }
 .color-picker{
-  position: absolute;
+  /* position: absolute; */
   z-index: 10;
   padding: 6px;
   box-sizing: content-box;
@@ -104,7 +104,7 @@
   position: relative;
   width:14%;
   margin-right: 3%;
-  padding-top: 80%;
+  padding-top: 60%;
   background: linear-gradient(to bottom,#f00 0,#ff0 16.7%,#0f0 33.4%,#0ff 50.1%,#00f 66.8%,#f0f 83.4%,#f00 100%);
   /*cursor: row-resize;*/
 }
@@ -242,12 +242,6 @@
           '#171c61',
           '#601986',
           '#920783',
-          '#a40a5e',
-          '#800080',
-          '#ff4500',
-          '#00ced1',
-          '#00c2ff',
-          '#ff00aa',
           '#ffffff',
           '#000000'
         ],
@@ -280,7 +274,7 @@
     },
     methods: {
       initColorPicker(){
-        this.hueh = this.$refs.colorpbox.querySelector(".color-bar").offsetHeight;
+        this.hueh = this.$el.querySelector(".color-bar").offsetHeight;
         this.huepostop = 0;
         this.colorboxposright = 0;
         this.colorboxpostop = 0;
@@ -313,7 +307,6 @@
         if(!_this.colorbarmousedown) return;
         var colorobj = ev.currentTarget.parentNode.parentNode;
         var colorbox = colorobj.querySelector(".color-current");
-        var colorinput = colorobj.querySelector("input");
         var cbartop = _this.getElementPageTop(colorobj);
         if((ev.clientY - (cbartop + 6)) <= 0){
           _this.huepostop = 0;
@@ -335,8 +328,6 @@
         var _this = this;
         if(!_this.colorboxmousedown) return;
         var colorobj = ev.currentTarget.parentNode.parentNode;
-        var colorbox = colorobj.querySelector(".color-current");
-        var colorinput = colorobj.querySelector("input");
         var colorboxtop = _this.getElementPageTop(colorobj);
         var colorboxleft = _this.getElementPageLeft(colorobj);
         if((ev.clientY - (colorboxtop + 6)) <= 0){

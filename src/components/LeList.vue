@@ -71,7 +71,7 @@ export default {
       this.$emit("onSelect", val);
     },
     leCtrlChange(){
-      this.leCtrlHeight = this.$el.querySelector(".lectrl").offsetHeight;
+      this.leCtrlHeight = this.$el.querySelector(".lectrl").offsetHeight + 4;
     }
   },
   computed:{

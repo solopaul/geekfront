@@ -23,8 +23,8 @@
       </el-form-item>
       <el-form-item v-if="true" label="布局">
         <el-radio-group v-model="window.layout" @change="setLayout" size="mini" >
-          <el-radio label="row">左右布局</el-radio>
-          <el-radio label="row-reverse">右左布局</el-radio>
+          <el-radio label="row">左右</el-radio>
+          <el-radio label="row-reverse">右左</el-radio>
         </el-radio-group>
       </el-form-item>
     </el-form>

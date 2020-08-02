@@ -1,5 +1,7 @@
 <template>
-  <ul class="sp-list lectrl" :style="{height: 'auto', 'overflow-y':'auto'}">
+<div class="lectrl">
+  <color-pick v-show="device.profile.ModeIndex != 1"></color-pick>
+  <ul class="sp-list" :style="{height: 'auto', 'overflow-y':'auto'}">
     <li class="item" v-for="(item,idx) in list" :key="idx" :class="{'selected': idx == current }" @click="ChangeSel(idx)">
       <span class="ol">{{idx+1}}</span>
       <span class="desc">
@@ -8,13 +10,16 @@
       <span class="el-icon-delete btn" @click="setCurrent(idx, '', '')"></span>
     </li>
   </ul>
+</div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import ColorPick from './common/ColorPicker';
 export default {
   name: "LeCtrl",
   components: {
+    ColorPick
   },
   data() {
     return {
@@ -59,7 +64,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.lectrl.sel {
+.sp-list.sel {
   transition: height 1.5s ease-in-out;
 }
 .sp-list li.item.selected {
