@@ -29,6 +29,9 @@ body,
   section.content {
     margin: 0;
   }
+  .el-drawer {
+    background-color: #25282F;
+  }
   .sp-list {
     margin: 0;
     padding: 0;
@@ -41,6 +44,7 @@ body,
       color: #888;
       padding: 0 10px;
       box-sizing: border-box;
+      text-shadow: 0 0 4px #000;
       cursor: default;
       &.active {
         color: #eee;

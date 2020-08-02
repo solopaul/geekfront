@@ -3,7 +3,7 @@
     <el-form ref="form_settings" :model="settings" label-position="left" label-width="90px" label-suffix=" : ">
       <el-form-item label="软件版本">
         {{appconf.SoftVersion}}
-        <el-button type="text" class="el-icon-refresh"> 检测</el-button>
+        <el-button type="text" class="el-icon-refresh" v-if="false"> 检测</el-button>
       </el-form-item>
       <el-form-item label="语言设置">
         <el-select v-model="appconf.Language" @change="setLang" placeholder="请选择语言">
@@ -28,7 +28,7 @@
         </el-radio-group>
       </el-form-item>
     </el-form>
-    <el-form :model="settings" label-position="top">
+    <el-form :model="settings" label-position="top" label-suffix=" : ">
       <el-form-item v-if="true" label="皮肤">
         <div class="skins" style="">
           <div :class="{item:true, active: skinpath == skin.path}" v-for="(skin,index) in skins" :key="skin.path" @click="setSkin(skin)" :style="{'background-image': 'url(' + skin.path + ')'}">
@@ -58,34 +58,13 @@ export default {
       skins: [
         {name: "皮肤", path: require('../assets/skin/bg1.jpg'),mode: 0},
         {name: "皮肤", path: require('../assets/skin/bg2.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg3.jpg'),mode: 0},
+        {name: "皮肤", path: require('../assets/skin/bg3.jpg'),mode: 1},
         {name: "皮肤", path: require('../assets/skin/bg4.jpg'),mode: 0},
         {name: "皮肤", path: require('../assets/skin/bg5.jpg'),mode: 0},
         {name: "皮肤", path: require('../assets/skin/bg6.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg7.jpg'),mode: 0},
+        {name: "皮肤", path: require('../assets/skin/bg7.jpg'),mode: 1},
         {name: "皮肤", path: require('../assets/skin/bg8.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg9.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg10.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg11.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg12.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg13.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg14.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg15.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg16.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg17.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg18.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg19.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg20.jpg'),mode: 1},
-        {name: "皮肤", path: require('../assets/skin/bg21.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg22.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg23.jpg'),mode: 1},
-        {name: "皮肤", path: require('../assets/skin/bg24.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg25.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg26.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg27.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg28.jpg'),mode: 1},
-        {name: "皮肤", path: require('../assets/skin/bg29.jpg'),mode: 0},
-        {name: "皮肤", path: require('../assets/skin/bg30.jpg'),mode: 1}
+        {name: "皮肤", path: require('../assets/skin/bg9.jpg'),mode: 0}
       ],
       skinpath: null
     };
@@ -133,15 +112,15 @@ export default {
     // color: #ccc;
     font-size: .8em;
     max-height: 200px;
-    overflow-y: scroll;
+    overflow-y: auto;
     .el-divider {
       color: #666;
     }
   }
   .skins {
     width: 100%;
-    max-height: 265px;
-    overflow-y: scroll;
+    max-height: 268px;
+    overflow-y: auto;
     box-sizing: border-box;
     display: flex;
     flex-wrap: wrap;

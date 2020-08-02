@@ -297,12 +297,13 @@ export default {
   .el-button {
     margin-left: 0.55vw;
     margin-bottom: 8px;
+    padding: 6px 0.8vw;
     &:first-child {
       margin-left: 0;
     }
-  }
-  .el-button {
-    padding: 6px 0.8vw;
+    border: 1px solid rgba(0, 56, 105, 0.72);
+    box-shadow: 0 0 6px #000;
+    color: #888;
   }
 }
 .keyset-tab .el-button.pad150 {

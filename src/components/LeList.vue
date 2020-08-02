@@ -3,7 +3,7 @@
     <cms-listbox :listh="($store.state.window.height - 100 - 300 - 30) + 'px'" v-if="true">
       <slot slot="title">
         <span class="el-icon-sunrise-1"></span>
-        灯光
+        {{$t("le.le_setting_title")}}
       </slot>
       <slot slot="btns">
         <span class="el-icon-download"></span>

@@ -1,5 +1,5 @@
 <template>
-  <div class="device" @mouseout="hideKeyConf" :style="{width: showwidth + 'px', height: showheight + 'px', overflow: 'hidden'}">
+  <div class="device" v-loading="loading" @mouseout="hideKeyConf" :style="{width: showwidth + 'px', height: showheight + 'px', overflow: 'hidden'}">
     <div
       class="device-le"
       v-for="(key,idx) in showkeys"
@@ -56,8 +56,9 @@
           <el-radio-button v-for="item in profilelist" :key="item.GUID" :label="item.GUID">{{$t("common")[item.Name]}}</el-radio-button>
         </el-radio-group>
         <div>
-          <el-button type="default" icon="el-icon-check" :class="{'btn-breath': pfchanged}">{{$t("common.save")}}</el-button>
-          <el-button type="primary" icon="el-icon-download">{{$t("common.apply")}}</el-button>
+          <el-button type="info" icon="el-icon-back" v-if="pfchanged" @click="restoreProfile">{{$t("common.cancel")}}</el-button>
+          <el-button type="default" icon="el-icon-check" :class="{'btn-breath': pfchanged}" @click="saveProfile" :disabled="loading">{{$t("common.save")}}</el-button>
+          <el-button type="primary" icon="el-icon-download" :class="{'btn-breath': isapply}" @click="applyProfile" :disabled="loading">{{$t("common.apply")}}</el-button>
         </div>
       </el-col>
     </el-row>
@@ -73,6 +74,8 @@ export default {
   name: "Device",
   data() {
     return {
+      loading: false,
+      isapply: false,
       zoomoffset: localStorage.getItem("zoomoffset") ? parseInt(localStorage.getItem("zoomoffset")) : 50,
       playtimer: null,
       value: 0,
@@ -209,6 +212,9 @@ export default {
     });
     this.$EventBus.$on("initProfile", (pfguid) => {
       this.changeProfile(pfguid);
+    });
+    this.$EventBus.$on("changeKeyMacro", (macroconf) => {
+      this.setKeyFunc(macroconf);
     });
   },
   beforeDestroy: function() {
@@ -400,6 +406,35 @@ export default {
         }
       });
     },
+    restoreProfile(){
+      this.changeProfile(this.device.profile.GUID);
+    },
+    saveProfile(){
+      this.loading = true;
+      this.isapply = true;
+      window.writeProfile(this.curdevice.ModelID, this.device.profile.GUID, this.device.profile, () => {
+        this.$notify({
+          title: "保存成功！",
+          type: "success",
+          position: "bottom-left"
+        });
+        // window.cprofile = JSON.parse(JSON.stringify(this.device.profile));
+        this.changeProfile(this.device.profile.GUID);
+        this.loading = false;
+      });
+    },
+    applyProfile(){
+      this.loading = true;
+      window.apply(this.curdevice.ModelID, this.device.profile.GUID, () => {
+        this.$notify({
+          title: "应用成功！",
+          type: "success",
+          position: "bottom-left"
+        });
+        this.loading = false;
+        this.isapply = false;
+      });
+    },
     initProfile(pfdetail){
       this.clearProfileStat(this.device.keymap);
       if(pfdetail.ModeIndex == 1){
@@ -505,18 +540,24 @@ export default {
       }
       var obj = this.$el.querySelector('#key' + this.currentkey);
       if(obj){
-        // obj.className = "device-key current";
-        // obj.setAttribute("data-func", this.$t("keys")[keyconf.LangTitle]);
-        // obj.setAttribute("data-le", '');
         let type = this.keysettype;
         for(let i=0;i<this.device.profile[type].length;i++){
           if(this.device.profile[type][i].Index == this.currentkey){
             this.device.profile[type][i].DriverValue = keyconf.DriverValue;
             this.device.profile[type][i].MenuName = keyconf.Name;
-            obj.setAttribute("data-func", this.$t("keys")[keyconf.LangTitle]);
+            if(keyconf.DriverValue == "0x0A010001"){
+              this.device.profile[type][i].Task = {Type: "Macro", Data: {}};
+              this.device.profile[type][i].Task.Data.GUID = keyconf.Task.GUID;
+              this.device.profile[type][i].Task.Data.Repeats = parseInt(keyconf.Task.Repeats);
+              this.device.profile[type][i].Task.Data.StopMode = parseInt(keyconf.Task.StopMode);
+              obj.setAttribute("data-func", this.$t("keys")[keyconf.LangTitle]);
+            }else{
+              delete this.device.profile[type][i].Task;
+            }
+            obj.setAttribute("data-func", keyconf.LangTitle ? this.$t("keys")[keyconf.LangTitle] : keyconf.Name);
             obj.setAttribute("data-le", '');
             obj.classList.add("seted");
-            obj.innerHTML = this.$t("keys")[keyconf.LangTitle];
+            obj.innerHTML = keyconf.LangTitle ? this.$t("keys")[keyconf.LangTitle] : keyconf.Name;
             console.log(4, this.currentkey, type,this.device.profile[type][i].MenuName,this.device.profile[type][i].DriverValue)
           }
         }
@@ -637,6 +678,42 @@ export default {
       //         this.iskeysetchange = true;
       //       }else{
       //         this.iskeysetchange = false;
+      //       }
+      //     }
+      //   }
+      // }else{
+      //   _this.alertInfo(_this.$t('common.key_select_attention'), 'warning', 1000);
+      // }
+    },
+    setKeyMacro: function(name, val){
+      console.log(name, val);
+      // var _this = this;
+      // var keysets = DEVICE.currentProfile.KeySet;
+      // if(_this.isfnkeyset){
+      //   keysets = DEVICE.currentProfile.FnKeySet;
+      // }
+      // //if(_this.isfnkeyset){
+      // //  _this.alertInfo(_this.$t('common.key_fnkeyset_cannot_set_macro'), 'warning', 1000);
+      // //  return false;
+      // //}
+      // if(DEVICE.editKeyCode){
+      //   var selectkey = $("key"+DEVICE.editKeyCode);
+      //   if(selectkey){
+      //     selectkey.innerHTML = "<span class='hasfunc'>"+ name +"</span>";
+      //     selectkey.classList.add("seted");
+      //     selectkey.setAttribute("data-func", name);
+      //   }
+      //   for(var i=0;i<keysets.length;i++){
+      //     if(keysets[i].Index === DEVICE.editKeyCode){
+      //       keysets[i].MenuPID = 1;
+      //       keysets[i].MenuName = name;
+      //       keysets[i].DriverValue = "0x0A010001";
+      //       keysets[i].Task = {Type: "Macro", Data: {}};
+      //       keysets[i].Task.Data = val;
+      //       if(window.isKeySetChange()){
+      //         _this.iskeysetchange = true;
+      //       }else{
+      //         _this.iskeysetchange = false;
       //       }
       //     }
       //   }

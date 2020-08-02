@@ -3,7 +3,7 @@
     <cms-listbox listh="300px" v-if="true">
       <slot slot="title">
         <span class="el-icon-notebook-2"></span>
-        宏
+        {{$t("macro.macro_setting_title")}}
       </slot>
       <slot slot="btns">
         <span class="el-icon-download"></span>
@@ -22,12 +22,12 @@
         </div>
         <div style="height:calc(100% - 32px - 68px);overflow-y:auto;">
           <ul class="sp-list">
-            <li class="item" v-for="item in curList" :key="item.GUID">
+            <li class="item" v-for="item in curList" :key="item.GUID" @dblclick="setMacro(item)">
               <img src="../assets/app/app.png"/>
               <span class="desc">
                 {{item.Name}}
               </span>
-              <span class="el-icon-check btn"></span>
+              <span class="el-icon-check btn" @click="setMacro(item)"></span>
             </li>
           </ul>
         </div>
@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import ListBox from './ListBox';
 export default {
   name: "ProfileList",
@@ -60,6 +61,9 @@ export default {
       }
     };
   },
+  computed:{
+    ...mapState(["device"])
+  },
   props: {},
   mounted() {
     // this.curList = this.$store.state.macrolist[this.selectMacroCate].Data;
@@ -74,6 +78,24 @@ export default {
     changeCate(val){
       this.selectMacroCate = val;
       this.curList = this.$store.state.macrolist[this.selectMacroCate].Data;
+    },
+    setMacro(data){
+      let macroconf = {
+        Name: "",
+        MenuPID: 1,
+        DriverValue: "0x0A010001",
+        Task: {
+          GUID: "",
+          StopMode: 2,
+          Repeats: 1
+        }
+      }
+      macroconf.Name = data.Name;
+      macroconf.Task.GUID = data.GUID;
+      macroconf.Task.StopMode = this.curMacro.mode;
+      macroconf.Task.Repeats = this.curMacro.repeat;
+      console.log(JSON.stringify(macroconf));
+      this.$EventBus.$emit("changeKeyMacro", macroconf);
     }
   },
 };
